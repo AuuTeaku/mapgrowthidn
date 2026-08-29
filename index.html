@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluasi Dakwah Nisa 1446-1447 H</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{
+    --ink:#1E2A2B;
+    --paper:#F3F1E9;
+    --panel:#FFFFFF;
+    --line:#DDD8C8;
+    --teal-900:#0B3B3C;
+    --teal-800:#124A4B;
+    --teal-700:#1A5C5D;
+    --gold:#C8992A;
+    --gold-dark:#9C7419;
+    --muted:#6B7472;
+    --shadow: 0 12px 32px -12px rgba(11,59,60,0.35);
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  ::selection{ background:var(--gold); color:#fff; }
+
+  /* ---------- HEADER ---------- */
+  header.app-header{
+    background:linear-gradient(135deg,var(--teal-900) 0%, var(--teal-800) 55%, var(--teal-700) 100%);
+    color:#F4EFDC;
+    padding:14px 24px 12px;
+    box-shadow:var(--shadow);
+    z-index:1200;
+    position:relative;
+    flex:0 0 auto;
+  }
+  header.app-header::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--gold) 0%, #E8C871 50%, var(--gold) 100%);
+  }
+  .header-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:42px;height:42px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #E8C871, var(--gold) 55%, var(--gold-dark) 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Poppins',sans-serif; font-weight:800; color:var(--teal-900); font-size:16px;
+    flex-shrink:0;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
+  }
+  .brand-text h1{
+    font-family:'Poppins',sans-serif;
+    font-size:19px;
+    font-weight:700;
+    margin:0;
+    letter-spacing:.2px;
+    line-height:1.15;
+  }
+  .brand-text p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:#BFD3CE;
+    font-weight:500;
+    letter-spacing:.3px;
+  }
+
+  .nav-controls{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .menu-toggle{
+    display:flex;
+    background:rgba(0,0,0,0.22);
+    border-radius:999px;
+    padding:4px;
+    gap:2px;
+  }
+  .menu-toggle button{
+    border:none;
+    background:transparent;
+    color:#CFE0DB;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    padding:8px 20px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:.18s ease;
+    letter-spacing:.3px;
+  }
+  .menu-toggle button:hover{ color:#fff; }
+  .menu-toggle button.active{
+    background:var(--gold);
+    color:#28210A;
+    box-shadow:0 3px 10px -2px rgba(0,0,0,.4);
+  }
+
+  .cat-select-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .cat-select-wrap::before{
+    content:"Kategori";
+    position:absolute;
+    top:-16px; left:2px;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    color:#9FC2BB;
+    font-weight:600;
+  }
+  select#categorySelect{
+    appearance:none;
+    -webkit-appearance:none;
+    background:#F4EFDC;
+    color:var(--teal-900);
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    border:none;
+    border-radius:8px;
+    padding:9px 34px 9px 14px;
+    cursor:pointer;
+    min-width:250px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%230B3B3C" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>');
+    background-repeat:no-repeat;
+    background-position:right 10px center;
+    background-size:14px;
+  }
+  select#categorySelect:focus-visible, .menu-toggle button:focus-visible{
+    outline:2px solid #fff;
+    outline-offset:2px;
+  }
+
+  .header-sub{
+    margin-top:10px;
+    font-size:12.5px;
+    color:#A9C6BF;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .header-sub b{ color:#F4EFDC; }
+  .dot-sep{ width:4px;height:4px;border-radius:50%;background:#5C807A; display:inline-block; }
+
+  /* ---------- MAIN LAYOUT ---------- */
+  main{
+    flex:1 1 auto;
+    position:relative;
+    min-height:0;
+  }
+  #map{
+    position:absolute;
+    inset:0;
+    background:#E7E2D2;
+  }
+  .leaflet-container{ font-family:'Inter',sans-serif; }
+
+  /* legend / hint chip */
+  .map-hint{
+    position:absolute;
+    top:14px; left:14px;
+    z-index:600;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(4px);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:8px 16px;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--teal-900);
+    box-shadow:0 6px 18px -6px rgba(0,0,0,0.25);
+    display:flex; align-items:center; gap:8px;
+  }
+  .map-hint .pulse{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 rgba(200,153,42,0.55);
+    animation:pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(200,153,42,0.55);}
+    70%{ box-shadow:0 0 0 10px rgba(200,153,42,0);}
+    100%{ box-shadow:0 0 0 0 rgba(200,153,42,0);}
+  }
+
+  /* national summary card */
+  #summaryCard{
+    position:absolute;
+    top:14px; right:14px;
+    z-index:600;
+    background:rgba(255,255,255,0.96);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:0 10px 26px -10px rgba(0,0,0,0.3);
+    padding:14px 16px;
+    width:230px;
+    max-height:70vh;
+    overflow-y:auto;
+  }
+  #summaryCard h3{
+    margin:0 0 8px;
+    font-family:'Poppins',sans-serif;
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    color:var(--teal-800);
+    border-bottom:2px solid var(--gold);
+    padding-bottom:6px;
+  }
+  .sum-row{
+    display:flex; justify-content:space-between; gap:10px;
+    font-size:12.5px;
+    padding:5px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .sum-row:last-child{ border-bottom:none; }
+  .sum-row span:first-child{ color:var(--muted); font-weight:500; }
+  .sum-row span:last-child{ font-weight:700; color:var(--teal-900); font-variant-numeric:tabular-nums; }
+
+  /* ---------- TOOLTIP PANEL (popup mengambang di sekitar titik klik) ---------- */
+  #detailPanel{
+    position:absolute;
+    top:0; left:0;
+    z-index:900;
+    background:rgba(255,255,255,0.98);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 14px 34px -10px rgba(11,59,60,0.45), 0 6px 16px -6px rgba(0,0,0,0.25);
+    width:min(360px, 88vw);
+    max-height:min(320px, 62vh);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    opacity:0;
+    transform:scale(0.96);
+    transition:opacity .12s ease, transform .12s ease;
+  }
+  #detailPanel.open{ display:flex; opacity:1; transform:scale(1); }
+  .detail-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 12px;
+    background:linear-gradient(90deg,var(--teal-900),var(--teal-700));
+    color:#fff;
+    flex:0 0 auto;
+  }
+  .detail-head-left{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+  .detail-head-left .prov-name{
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    letter-spacing:.2px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .detail-head-left .cat-name{
+    font-size:10px;
+    color:#DCC97E;
+    font-weight:600;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  #detailPanel .closeBtn{
+    background:rgba(255,255,255,0.14);
+    border:none;
+    color:#fff;
+    width:24px;height:24px;
+    border-radius:50%;
+    font-size:14px;
+    line-height:1;
+    cursor:pointer;
+    transition:.15s;
+    flex-shrink:0;
+    margin-left:8px;
+  }
+  #detailPanel .closeBtn:hover{ background:rgba(255,255,255,0.3); }
+
+  .cards-scroll{
+    flex:1 1 auto;
+    display:flex;
+    flex-direction:row;
+    gap:10px;
+    overflow-x:auto;
+    overflow-y:auto;
+    padding:10px 12px;
+  }
+  .cards-scroll::-webkit-scrollbar{ height:7px; }
+  .cards-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:6px; }
+  .cards-scroll::-webkit-scrollbar-track{ background:transparent; }
+
+  .subcard{
+    flex:0 0 auto;
+    min-width:150px;
+    border:1.5px solid var(--line);
+    border-radius:9px;
+    background:#FCFBF6;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .subcard-head{
+    background:var(--teal-900);
+    color:#F4EFDC;
+    font-family:'Poppins',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:.3px;
+    padding:6px 10px;
+    text-align:center;
+    border-bottom:2px solid var(--gold);
+  }
+  .subcard-mahaly{
+    font-size:9.5px;
+    color:var(--muted);
+    text-align:center;
+    padding:5px 8px 0;
+    font-weight:600;
+  }
+  .subcard-body{ padding:6px 10px 8px; }
+  .field-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:8px;
+    padding:4px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:11px;
+  }
+  .field-row:last-child{ border-bottom:none; }
+  .field-row .lbl{ color:var(--muted); font-weight:500; }
+  .field-row .val{ font-weight:700; color:var(--teal-900); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  .empty-msg{
+    padding:20px; text-align:center; color:var(--muted); font-size:12.5px; width:100%;
+  }
+
+  /* leaflet tweak */
+  .leaflet-tooltip.province-label{
+    background:rgba(11,59,60,0.88);
+    color:#fff;
+    border:none;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:11px;
+    padding:3px 8px;
+    border-radius:6px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.25);
+  }
+  .leaflet-tooltip.province-label::before{ display:none; }
+
+  @media (max-width:720px){
+    .header-top{ flex-direction:column; align-items:flex-start; }
+    select#categorySelect{ min-width:0; width:100%; }
+    #summaryCard{ display:none; }
+    .subcard{ min-width:160px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-mark">ED</div>
+      <div class="brand-text">
+        <h1>EVALUASI DAKWAH NISA 1446-1447 H</h1>
+        <p>Peta Sebaran Data Keasdiran &mdash; Seluruh Provinsi Indonesia</p>
+      </div>
+    </div>
+    <div class="nav-controls">
+      <div class="menu-toggle" role="tablist" aria-label="Pilih menu data">
+        <button id="btnMenuPJ" class="active" role="tab" aria-selected="true">PJ</button>
+        <button id="btnMenuLijan" role="tab" aria-selected="false">Lijan</button>
+      </div>
+      <div class="cat-select-wrap">
+        <select id="categorySelect" aria-label="Pilih kategori data"></select>
+      </div>
+    </div>
+  </div>
+  <div class="header-sub">
+    <span>Menu aktif: <b id="activeMenuLabel">PJ</b></span>
+    <span class="dot-sep"></span>
+    <span>Kategori: <b id="activeCatLabel">JUMLAH</b></span>
+    <span class="dot-sep"></span>
+    <span id="activeProvCount">32 provinsi memiliki data</span>
+  </div>
+</header>
+
+<main>
+  <div id="map"></div>
+  <div class="map-hint"><span class="pulse"></span> Klik titik / wilayah provinsi untuk melihat rincian data &mdash; klik di luar untuk menutup</div>
+  <div id="summaryCard">
+    <h3 id="summaryTitle">Ringkasan Nasional</h3>
+    <div id="summaryBody"></div>
+  </div>
+
+  <div id="detailPanel">
+    <div class="detail-head">
+      <div class="detail-head-left">
+        <span class="prov-name" id="panelProvName">-</span>
+        <span class="cat-name" id="panelCatName">-</span>
+      </div>
+      <button class="closeBtn" id="panelClose" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="cards-scroll" id="panelCards"></div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  if (typeof L === 'undefined') {
+    document.write('<script src="https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/leaflet\/1.9.4\/leaflet.min.js"><\/script>');
+  }
+</script>
+<script>
+/* ====================================================================
+   DATA (diekstrak langsung dari file Excel: 0526_REKAP_EVALUASI_DAKWAH_NISA.xlsx)
+   Sheet "PJ"    -> PJ_DATA   (dikelompokkan per provinsi, tiap provinsi berisi array sub-wilayah/KEASDIRAN)
+   Sheet "Lijan" -> LJ_DATA
+==================================================================== */
+</script>
+<script>
+/* ====================================================================
+   DATA HASIL EKSTRAKSI EXCEL: 0526_REKAP_EVALUASI_DAKWAH_NISA.xlsx
+   - PJ_DATA  : dari sheet "PJ"    (90 KEASDIRAN, dikelompokkan ke 32 provinsi)
+   - LJ_DATA  : dari sheet "Lijan" (88 KEASDIRAN, dikelompokkan ke 28 provinsi)
+   Struktur: { "<Nama Provinsi>": [ { name:"<KEASDIRAN>", ...kolom... }, ... ] }
+==================================================================== */
+
+const PJ_DATA = {"Aceh": [{"name": "ACEH 1", "jumlah_mahaly": 8, "A": 299, "D": 317, "IA": 517, "IM": 216, "tokoh_teriayah": 19, "rkt_d_plus": 48, "rkt_d_minus": 7, "rkt_hp_plus": 68, "rkt_hp_minus": 21, "rkt_hu_plus": 208, "rkt_hu_minus": 106, "akhzu_sk": 10, "akhzu_sks": 9, "akhzu_sk_blm03": 11, "akhzu_taahud": 0, "aaa_ia": 76, "aaa_im": 26, "aaa_ada": 6, "aaa_belum": 2}, {"name": "ACEH 2", "jumlah_mahaly": 8, "A": 208, "D": 209, "IA": 306, "IM": 197, "tokoh_teriayah": 76, "rkt_d_plus": 59, "rkt_d_minus": 22, "rkt_hp_plus": 72, "rkt_hp_minus": 27, "rkt_hu_plus": 285, "rkt_hu_minus": 206, "akhzu_sk": 19, "akhzu_sks": 25, "akhzu_sk_blm03": 18, "akhzu_taahud": 13, "aaa_ia": 11, "aaa_im": 12, "aaa_ada": 3, "aaa_belum": 5}], "Sumatera Utara": [{"name": "SUMUT 1", "jumlah_mahaly": 15, "A": 377, "D": 791, "IA": 1267, "IM": 1280, "tokoh_teriayah": 107, "rkt_d_plus": 270, "rkt_d_minus": 32, "rkt_hp_plus": 415, "rkt_hp_minus": 216, "rkt_hu_plus": 1138, "rkt_hu_minus": 536, "akhzu_sk": 40, "akhzu_sks": 14, "akhzu_sk_blm03": 18, "akhzu_taahud": 9, "aaa_ia": 132, "aaa_im": 108, "aaa_ada": 5, "aaa_belum": 9}, {"name": "SUMUT 2A", "jumlah_mahaly": 5, "A": 192, "D": 353, "IA": 483, "IM": 536, "tokoh_teriayah": 79, "rkt_d_plus": 121, "rkt_d_minus": 20, "rkt_hp_plus": 178, "rkt_hp_minus": 72, "rkt_hu_plus": 578, "rkt_hu_minus": 332, "akhzu_sk": 58, "akhzu_sks": 19, "akhzu_sk_blm03": 28, "akhzu_taahud": 13, "aaa_ia": 174, "aaa_im": 225, "aaa_ada": 3, "aaa_belum": 1}, {"name": "SUMUT 2B", "jumlah_mahaly": 14, "A": 413, "D": 686, "IA": 1520, "IM": 750, "tokoh_teriayah": 136, "rkt_d_plus": 192, "rkt_d_minus": 36, "rkt_hp_plus": 272, "rkt_hp_minus": 77, "rkt_hu_plus": 639, "rkt_hu_minus": 219, "akhzu_sk": 31, "akhzu_sks": 21, "akhzu_sk_blm03": 33, "akhzu_taahud": 37, "aaa_ia": 408, "aaa_im": 168, "aaa_ada": 10, "aaa_belum": 2}, {"name": "SUMUT 3", "jumlah_mahaly": 13, "A": 374, "D": 790, "IA": 1886, "IM": 649, "tokoh_teriayah": 204, "rkt_d_plus": 226, "rkt_d_minus": 25, "rkt_hp_plus": 365, "rkt_hp_minus": 104, "rkt_hu_plus": 653, "rkt_hu_minus": 249, "akhzu_sk": 93, "akhzu_sks": 57, "akhzu_sk_blm03": 21, "akhzu_taahud": 11, "aaa_ia": 230, "aaa_im": 86, "aaa_ada": 4, "aaa_belum": 8}, {"name": "SUMUT 4", "jumlah_mahaly": 6, "A": 141, "D": 251, "IA": 538, "IM": 338, "tokoh_teriayah": 69, "rkt_d_plus": 89, "rkt_d_minus": 26, "rkt_hp_plus": 109, "rkt_hp_minus": 42, "rkt_hu_plus": 303, "rkt_hu_minus": 150, "akhzu_sk": 37, "akhzu_sks": 14, "akhzu_sk_blm03": 51, "akhzu_taahud": 10, "aaa_ia": 118, "aaa_im": 69, "aaa_ada": 3, "aaa_belum": 3}], "Sumatera Barat": [{"name": "SUMBAR 1", "jumlah_mahaly": 8, "A": 124, "D": 231, "IA": 1305, "IM": 148, "tokoh_teriayah": 31, "rkt_d_plus": 54, "rkt_d_minus": 2, "rkt_hp_plus": 119, "rkt_hp_minus": 51, "rkt_hu_plus": 513, "rkt_hu_minus": 237, "akhzu_sk": 7, "akhzu_sks": 7, "akhzu_sk_blm03": 2, "akhzu_taahud": 10, "aaa_ia": 35, "aaa_im": 7, "aaa_ada": 1, "aaa_belum": 4}, {"name": "SUMBAR 2", "jumlah_mahaly": 7, "A": 193, "D": 269, "IA": 565, "IM": 248, "tokoh_teriayah": 79, "rkt_d_plus": 116, "rkt_d_minus": 57, "rkt_hp_plus": 169, "rkt_hp_minus": 72, "rkt_hu_plus": 576, "rkt_hu_minus": 338, "akhzu_sk": 33, "akhzu_sks": 8, "akhzu_sk_blm03": 13, "akhzu_taahud": 0, "aaa_ia": 26, "aaa_im": 26, "aaa_ada": 1, "aaa_belum": 6}], "Riau": [{"name": "RIAU 1", "jumlah_mahaly": 7, "A": 223, "D": 340, "IA": 349, "IM": 266, "tokoh_teriayah": 49, "rkt_d_plus": 66, "rkt_d_minus": 15, "rkt_hp_plus": 118, "rkt_hp_minus": 40, "rkt_hu_plus": 287, "rkt_hu_minus": 139, "akhzu_sk": 12, "akhzu_sks": 5, "akhzu_sk_blm03": 7, "akhzu_taahud": 3, "aaa_ia": 40, "aaa_im": 26, "aaa_ada": 6, "aaa_belum": 2}, {"name": "RIAU 2", "jumlah_mahaly": 4, "A": 116, "D": 114, "IA": 359, "IM": 147, "tokoh_teriayah": 35, "rkt_d_plus": 54, "rkt_d_minus": 19, "rkt_hp_plus": 120, "rkt_hp_minus": 64, "rkt_hu_plus": 244, "rkt_hu_minus": 114, "akhzu_sk": 10, "akhzu_sks": 0, "akhzu_sk_blm03": 24, "akhzu_taahud": 0, "aaa_ia": 92, "aaa_im": 24, "aaa_ada": 3, "aaa_belum": 1}, {"name": "RIAU 3", "jumlah_mahaly": 4, "A": 94, "D": 145, "IA": 266, "IM": 128, "tokoh_teriayah": 25, "rkt_d_plus": 35, "rkt_d_minus": 4, "rkt_hp_plus": 110, "rkt_hp_minus": 53, "rkt_hu_plus": 185, "rkt_hu_minus": 76, "akhzu_sk": 21, "akhzu_sks": 7, "akhzu_sk_blm03": 13, "akhzu_taahud": 7, "aaa_ia": 13, "aaa_im": 18, "aaa_ada": 1, "aaa_belum": 2}], "Kepulauan Riau": [{"name": "KEPRI", "jumlah_mahaly": 6, "A": 185, "D": 248, "IA": 677, "IM": 205, "tokoh_teriayah": 137, "rkt_d_plus": 60, "rkt_d_minus": 13, "rkt_hp_plus": 133, "rkt_hp_minus": 53, "rkt_hu_plus": 304, "rkt_hu_minus": 145, "akhzu_sk": 39, "akhzu_sks": 21, "akhzu_sk_blm03": 19, "akhzu_taahud": 10, "aaa_ia": 120, "aaa_im": 30, "aaa_ada": 4, "aaa_belum": 3}], "Bengkulu": [{"name": "BENGKULU", "jumlah_mahaly": 3, "A": 94, "D": 268, "IA": 344, "IM": 292, "tokoh_teriayah": 89, "rkt_d_plus": 93, "rkt_d_minus": 11, "rkt_hp_plus": 190, "rkt_hp_minus": 132, "rkt_hu_plus": 317, "rkt_hu_minus": 68, "akhzu_sk": 53, "akhzu_sks": 19, "akhzu_sk_blm03": 18, "akhzu_taahud": 6, "aaa_ia": 21, "aaa_im": 15, "aaa_ada": 1, "aaa_belum": 2}], "Jambi": [{"name": "JAMBI", "jumlah_mahaly": 4, "A": 93, "D": 157, "IA": 357, "IM": 140, "tokoh_teriayah": 60, "rkt_d_plus": 38, "rkt_d_minus": 5, "rkt_hp_plus": 103, "rkt_hp_minus": 55, "rkt_hu_plus": 199, "rkt_hu_minus": 114, "akhzu_sk": 20, "akhzu_sks": 3, "akhzu_sk_blm03": 15, "akhzu_taahud": 0, "aaa_ia": 0, "aaa_im": 6, "aaa_ada": 3, "aaa_belum": 3}], "Kepulauan Bangka Belitung": [{"name": "BABEL", "jumlah_mahaly": 7, "A": 151, "D": 114, "IA": 361, "IM": 102, "tokoh_teriayah": 18, "rkt_d_plus": 53, "rkt_d_minus": 16, "rkt_hp_plus": 37, "rkt_hp_minus": 4, "rkt_hu_plus": 112, "rkt_hu_minus": 35, "akhzu_sk": 5, "akhzu_sks": 5, "akhzu_sk_blm03": 5, "akhzu_taahud": 16, "aaa_ia": 27, "aaa_im": 8, "aaa_ada": 3, "aaa_belum": 4}], "Sumatera Selatan": [{"name": "SUMSEL 1", "jumlah_mahaly": 12, "A": 371, "D": 876, "IA": 1376, "IM": 750, "tokoh_teriayah": 186, "rkt_d_plus": 373, "rkt_d_minus": 61, "rkt_hp_plus": 615, "rkt_hp_minus": 256, "rkt_hu_plus": 1362, "rkt_hu_minus": 673, "akhzu_sk": 100, "akhzu_sks": 47, "akhzu_sk_blm03": 72, "akhzu_taahud": 17, "aaa_ia": 245, "aaa_im": 83, "aaa_ada": 6, "aaa_belum": 6}, {"name": "SUMSEL 2", "jumlah_mahaly": 7, "A": 143, "D": 190, "IA": 810, "IM": 146, "tokoh_teriayah": 57, "rkt_d_plus": 63, "rkt_d_minus": 1, "rkt_hp_plus": 98, "rkt_hp_minus": 27, "rkt_hu_plus": 292, "rkt_hu_minus": 167, "akhzu_sk": 15, "akhzu_sks": 5, "akhzu_sk_blm03": 21, "akhzu_taahud": 3, "aaa_ia": 164, "aaa_im": 11, "aaa_ada": 4, "aaa_belum": 3}], "Lampung": [{"name": "LAMPUNG 1", "jumlah_mahaly": 6, "A": 245, "D": 452, "IA": 610, "IM": 349, "tokoh_teriayah": 121, "rkt_d_plus": 181, "rkt_d_minus": 21, "rkt_hp_plus": 317, "rkt_hp_minus": 102, "rkt_hu_plus": 505, "rkt_hu_minus": 130, "akhzu_sk": 35, "akhzu_sks": 31, "akhzu_sk_blm03": 23, "akhzu_taahud": 8, "aaa_ia": 112, "aaa_im": 45, "aaa_ada": 3, "aaa_belum": 4}, {"name": "LAMPUNG 2", "jumlah_mahaly": 5, "A": 107, "D": 255, "IA": 405, "IM": 192, "tokoh_teriayah": 71, "rkt_d_plus": 56, "rkt_d_minus": 13, "rkt_hp_plus": 132, "rkt_hp_minus": 39, "rkt_hu_plus": 344, "rkt_hu_minus": 79, "akhzu_sk": 33, "akhzu_sks": 12, "akhzu_sk_blm03": 18, "akhzu_taahud": 3, "aaa_ia": 29, "aaa_im": 11, "aaa_ada": 1, "aaa_belum": 3}, {"name": "LAMPUNG 3", "jumlah_mahaly": 7, "A": 140, "D": 302, "IA": 824, "IM": 331, "tokoh_teriayah": 70, "rkt_d_plus": 66, "rkt_d_minus": 18, "rkt_hp_plus": 151, "rkt_hp_minus": 73, "rkt_hu_plus": 365, "rkt_hu_minus": 110, "akhzu_sk": 29, "akhzu_sks": 19, "akhzu_sk_blm03": 18, "akhzu_taahud": 12, "aaa_ia": 165, "aaa_im": 96, "aaa_ada": 6, "aaa_belum": 1}], "Banten": [{"name": "BANTEN BARAT", "jumlah_mahaly": 10, "A": 416, "D": 624, "IA": 910, "IM": 356, "tokoh_teriayah": 105, "rkt_d_plus": 163, "rkt_d_minus": 4, "rkt_hp_plus": 250, "rkt_hp_minus": 35, "rkt_hu_plus": 652, "rkt_hu_minus": 216, "akhzu_sk": 37, "akhzu_sks": 23, "akhzu_sk_blm03": 43, "akhzu_taahud": 13, "aaa_ia": 235, "aaa_im": 45, "aaa_ada": 3, "aaa_belum": 7}, {"name": "BANTEN TIMUR", "jumlah_mahaly": 14, "A": 613, "D": 868, "IA": 1920, "IM": 384, "tokoh_teriayah": 223, "rkt_d_plus": 187, "rkt_d_minus": 25, "rkt_hp_plus": 293, "rkt_hp_minus": 69, "rkt_hu_plus": 716, "rkt_hu_minus": 208, "akhzu_sk": 49, "akhzu_sks": 50, "akhzu_sk_blm03": 43, "akhzu_taahud": 9, "aaa_ia": 66, "aaa_im": 65, "aaa_ada": 6, "aaa_belum": 6}], "DKI Jakarta": [{"name": "DKI 1", "jumlah_mahaly": 11, "A": 343, "D": 528, "IA": 284, "IM": 286, "tokoh_teriayah": 105, "rkt_d_plus": 59, "rkt_d_minus": 4, "rkt_hp_plus": 76, "rkt_hp_minus": 16, "rkt_hu_plus": 138, "rkt_hu_minus": 43, "akhzu_sk": 16, "akhzu_sks": 10, "akhzu_sk_blm03": 8, "akhzu_taahud": 13, "aaa_ia": 12, "aaa_im": 16, "aaa_ada": 3, "aaa_belum": 3}, {"name": "DKI 2", "jumlah_mahaly": 6, "A": 237, "D": 373, "IA": 325, "IM": 209, "tokoh_teriayah": 90, "rkt_d_plus": 61, "rkt_d_minus": 9, "rkt_hp_plus": 103, "rkt_hp_minus": 37, "rkt_hu_plus": 294, "rkt_hu_minus": 70, "akhzu_sk": 15, "akhzu_sks": 1, "akhzu_sk_blm03": 6, "akhzu_taahud": 7, "aaa_ia": 37, "aaa_im": 24, "aaa_ada": 5, "aaa_belum": 1}, {"name": "DKI 3", "jumlah_mahaly": 8, "A": 301, "D": 441, "IA": 642, "IM": 210, "tokoh_teriayah": 107, "rkt_d_plus": 152, "rkt_d_minus": 24, "rkt_hp_plus": 276, "rkt_hp_minus": 95, "rkt_hu_plus": 682, "rkt_hu_minus": 240, "akhzu_sk": 48, "akhzu_sks": 34, "akhzu_sk_blm03": 48, "akhzu_taahud": 40, "aaa_ia": 71, "aaa_im": 11, "aaa_ada": 4, "aaa_belum": 2}], "Jawa Barat": [{"name": "DEPOK", "jumlah_mahaly": 7, "A": 302, "D": 528, "IA": 428, "IM": 662, "tokoh_teriayah": 131, "rkt_d_plus": 223, "rkt_d_minus": 49, "rkt_hp_plus": 323, "rkt_hp_minus": 108, "rkt_hu_plus": 593, "rkt_hu_minus": 167, "akhzu_sk": 31, "akhzu_sks": 12, "akhzu_sk_blm03": 40, "akhzu_taahud": 9, "aaa_ia": 79, "aaa_im": 124, "aaa_ada": 7, "aaa_belum": 0}, {"name": "BEKASI RAYA", "jumlah_mahaly": 10, "A": 505, "D": 669, "IA": 1353, "IM": 528, "tokoh_teriayah": 165, "rkt_d_plus": 141, "rkt_d_minus": 20, "rkt_hp_plus": 283, "rkt_hp_minus": 166, "rkt_hu_plus": 480, "rkt_hu_minus": 139, "akhzu_sk": 42, "akhzu_sks": 39, "akhzu_sk_blm03": 67, "akhzu_taahud": 43, "aaa_ia": 225, "aaa_im": 156, "aaa_ada": 7, "aaa_belum": 1}, {"name": "KAPURSUCI", "jumlah_mahaly": 8, "A": 356, "D": 745, "IA": 611, "IM": 277, "tokoh_teriayah": 266, "rkt_d_plus": 157, "rkt_d_minus": 43, "rkt_hp_plus": 262, "rkt_hp_minus": 76, "rkt_hu_plus": 753, "rkt_hu_minus": 286, "akhzu_sk": 60, "akhzu_sks": 42, "akhzu_sk_blm03": 68, "akhzu_taahud": 0, "aaa_ia": 126, "aaa_im": 29, "aaa_ada": 2, "aaa_belum": 6}, {"name": "BOGOR KOTA 1", "jumlah_mahaly": 10, "A": 496, "D": 599, "IA": 1753, "IM": 401, "tokoh_teriayah": 252, "rkt_d_plus": 181, "rkt_d_minus": 15, "rkt_hp_plus": 353, "rkt_hp_minus": 102, "rkt_hu_plus": 879, "rkt_hu_minus": 329, "akhzu_sk": 59, "akhzu_sks": 28, "akhzu_sk_blm03": 37, "akhzu_taahud": 9, "aaa_ia": 363, "aaa_im": 71, "aaa_ada": 7, "aaa_belum": 3}, {"name": "BOGOR KOTA 2", "jumlah_mahaly": 10, "A": 545, "D": 770, "IA": 2356, "IM": 260, "tokoh_teriayah": 148, "rkt_d_plus": 193, "rkt_d_minus": 9, "rkt_hp_plus": 294, "rkt_hp_minus": 67, "rkt_hu_plus": 742, "rkt_hu_minus": 228, "akhzu_sk": 53, "akhzu_sks": 33, "akhzu_sk_blm03": 47, "akhzu_taahud": 24, "aaa_ia": 259, "aaa_im": 64, "aaa_ada": 6, "aaa_belum": 4}, {"name": "BOGOR KABUPATEN 1", "jumlah_mahaly": 12, "A": 580, "D": 861, "IA": 1102, "IM": 500, "tokoh_teriayah": 230, "rkt_d_plus": 266, "rkt_d_minus": 39, "rkt_hp_plus": 487, "rkt_hp_minus": 140, "rkt_hu_plus": 1277, "rkt_hu_minus": 413, "akhzu_sk": 194, "akhzu_sks": 43, "akhzu_sk_blm03": 71, "akhzu_taahud": 13, "aaa_ia": 131, "aaa_im": 53, "aaa_ada": 7, "aaa_belum": 5}, {"name": "BOGOR KABUPATEN 2", "jumlah_mahaly": 9, "A": 436, "D": 589, "IA": 651, "IM": 353, "tokoh_teriayah": 88, "rkt_d_plus": 146, "rkt_d_minus": 52, "rkt_hp_plus": 136, "rkt_hp_minus": 28, "rkt_hu_plus": 244, "rkt_hu_minus": 163, "akhzu_sk": 39, "akhzu_sks": 41, "akhzu_sk_blm03": 18, "akhzu_taahud": 14, "aaa_ia": 215, "aaa_im": 113, "aaa_ada": 9, "aaa_belum": 0}, {"name": "SUKABUMI", "jumlah_mahaly": 4, "A": 191, "D": 198, "IA": 489, "IM": 179, "tokoh_teriayah": 63, "rkt_d_plus": 54, "rkt_d_minus": 8, "rkt_hp_plus": 108, "rkt_hp_minus": 58, "rkt_hu_plus": 198, "rkt_hu_minus": 67, "akhzu_sk": 10, "akhzu_sks": 2, "akhzu_sk_blm03": 6, "akhzu_taahud": 5, "aaa_ia": 11, "aaa_im": 5, "aaa_ada": 0, "aaa_belum": 4}, {"name": "BANDUNG KOTA 1", "jumlah_mahaly": 8, "A": 191, "D": 282, "IA": 559, "IM": 183, "tokoh_teriayah": 119, "rkt_d_plus": 45, "rkt_d_minus": 6, "rkt_hp_plus": 86, "rkt_hp_minus": 32, "rkt_hu_plus": 223, "rkt_hu_minus": 95, "akhzu_sk": 48, "akhzu_sks": 15, "akhzu_sk_blm03": 49, "akhzu_taahud": 7, "aaa_ia": 68, "aaa_im": 9, "aaa_ada": 4, "aaa_belum": 4}, {"name": "BANDUNG KOTA 2", "jumlah_mahaly": 11, "A": 328, "D": 601, "IA": 1019, "IM": 674, "tokoh_teriayah": 224, "rkt_d_plus": 87, "rkt_d_minus": 19, "rkt_hp_plus": 92, "rkt_hp_minus": 30, "rkt_hu_plus": 222, "rkt_hu_minus": 93, "akhzu_sk": 56, "akhzu_sks": 33, "akhzu_sk_blm03": 55, "akhzu_taahud": 9, "aaa_ia": 38, "aaa_im": 53, "aaa_ada": 4, "aaa_belum": 8}, {"name": "BANDUNG BARAT", "jumlah_mahaly": 8, "A": 351, "D": 544, "IA": 812, "IM": 400, "tokoh_teriayah": 145, "rkt_d_plus": 157, "rkt_d_minus": 15, "rkt_hp_plus": 202, "rkt_hp_minus": 44, "rkt_hu_plus": 323, "rkt_hu_minus": 107, "akhzu_sk": 39, "akhzu_sks": 16, "akhzu_sk_blm03": 48, "akhzu_taahud": 2, "aaa_ia": 132, "aaa_im": 70, "aaa_ada": 8, "aaa_belum": 0}, {"name": "BANDUNG KABUPATEN 1", "jumlah_mahaly": 10, "A": 455, "D": 672, "IA": 1599, "IM": 839, "tokoh_teriayah": 143, "rkt_d_plus": 89, "rkt_d_minus": 10, "rkt_hp_plus": 184, "rkt_hp_minus": 50, "rkt_hu_plus": 528, "rkt_hu_minus": 185, "akhzu_sk": 27, "akhzu_sks": 24, "akhzu_sk_blm03": 26, "akhzu_taahud": 15, "aaa_ia": 169, "aaa_im": 134, "aaa_ada": 3, "aaa_belum": 7}, {"name": "BANDUNG KABUPATEN 2", "jumlah_mahaly": 10, "A": 412, "D": 730, "IA": 1170, "IM": 787, "tokoh_teriayah": 169, "rkt_d_plus": 208, "rkt_d_minus": 39, "rkt_hp_plus": 424, "rkt_hp_minus": 200, "rkt_hu_plus": 1322, "rkt_hu_minus": 598, "akhzu_sk": 80, "akhzu_sks": 42, "akhzu_sk_blm03": 45, "akhzu_taahud": 9, "aaa_ia": 339, "aaa_im": 223, "aaa_ada": 9, "aaa_belum": 1}, {"name": "SUMEDANG RAYA", "jumlah_mahaly": 8, "A": 278, "D": 526, "IA": 1083, "IM": 841, "tokoh_teriayah": 194, "rkt_d_plus": 106, "rkt_d_minus": 5, "rkt_hp_plus": 230, "rkt_hp_minus": 88, "rkt_hu_plus": 482, "rkt_hu_minus": 203, "akhzu_sk": 53, "akhzu_sks": 45, "akhzu_sk_blm03": 59, "akhzu_taahud": 11, "aaa_ia": 176, "aaa_im": 105, "aaa_ada": 4, "aaa_belum": 4}, {"name": "CIREBON", "jumlah_mahaly": 7, "A": 210, "D": 355, "IA": 1182, "IM": 640, "tokoh_teriayah": 176, "rkt_d_plus": 95, "rkt_d_minus": 5, "rkt_hp_plus": 130, "rkt_hp_minus": 47, "rkt_hu_plus": 480, "rkt_hu_minus": 272, "akhzu_sk": 15, "akhzu_sks": 40, "akhzu_sk_blm03": 26, "akhzu_taahud": 3, "aaa_ia": 293, "aaa_im": 57, "aaa_ada": 3, "aaa_belum": 4}, {"name": "GARUTRAYA", "jumlah_mahaly": 5, "A": 226, "D": 375, "IA": 447, "IM": 335, "tokoh_teriayah": 44, "rkt_d_plus": 131, "rkt_d_minus": 18, "rkt_hp_plus": 234, "rkt_hp_minus": 61, "rkt_hu_plus": 434, "rkt_hu_minus": 84, "akhzu_sk": 34, "akhzu_sks": 17, "akhzu_sk_blm03": 31, "akhzu_taahud": 1, "aaa_ia": 43, "aaa_im": 26, "aaa_ada": 4, "aaa_belum": 1}, {"name": "PRIATIM", "jumlah_mahaly": 7, "A": 240, "D": 484, "IA": 304, "IM": 237, "tokoh_teriayah": 80, "rkt_d_plus": 85, "rkt_d_minus": 16, "rkt_hp_plus": 164, "rkt_hp_minus": 55, "rkt_hu_plus": 264, "rkt_hu_minus": 118, "akhzu_sk": 36, "akhzu_sks": 18, "akhzu_sk_blm03": 30, "akhzu_taahud": 5, "aaa_ia": 19, "aaa_im": 18, "aaa_ada": 3, "aaa_belum": 3}], "Jawa Tengah": [{"name": "KEDURAYA", "jumlah_mahaly": 6, "A": 156, "D": 374, "IA": 662, "IM": 284, "tokoh_teriayah": 179, "rkt_d_plus": 156, "rkt_d_minus": 38, "rkt_hp_plus": 272, "rkt_hp_minus": 113, "rkt_hu_plus": 732, "rkt_hu_minus": 404, "akhzu_sk": 42, "akhzu_sks": 22, "akhzu_sk_blm03": 8, "akhzu_taahud": 0, "aaa_ia": 47, "aaa_im": 26, "aaa_ada": 2, "aaa_belum": 4}, {"name": "BARLINGMAS", "jumlah_mahaly": 7, "A": 167, "D": 352, "IA": 800, "IM": 489, "tokoh_teriayah": 278, "rkt_d_plus": 102, "rkt_d_minus": 14, "rkt_hp_plus": 223, "rkt_hp_minus": 102, "rkt_hu_plus": 563, "rkt_hu_minus": 233, "akhzu_sk": 11, "akhzu_sks": 16, "akhzu_sk_blm03": 13, "akhzu_taahud": 10, "aaa_ia": 47, "aaa_im": 46, "aaa_ada": 2, "aaa_belum": 5}, {"name": "CILACAP", "jumlah_mahaly": 7, "A": 145, "D": 330, "IA": 795, "IM": 254, "tokoh_teriayah": 324, "rkt_d_plus": 50, "rkt_d_minus": 11, "rkt_hp_plus": 87, "rkt_hp_minus": 40, "rkt_hu_plus": 258, "rkt_hu_minus": 98, "akhzu_sk": 81, "akhzu_sks": 45, "akhzu_sk_blm03": 153, "akhzu_taahud": 6, "aaa_ia": 126, "aaa_im": 38, "aaa_ada": 1, "aaa_belum": 6}, {"name": "SEMARANG", "jumlah_mahaly": 7, "A": 194, "D": 513, "IA": 581, "IM": 426, "tokoh_teriayah": 46, "rkt_d_plus": 148, "rkt_d_minus": 10, "rkt_hp_plus": 210, "rkt_hp_minus": 24, "rkt_hu_plus": 608, "rkt_hu_minus": 109, "akhzu_sk": 45, "akhzu_sks": 21, "akhzu_sk_blm03": 32, "akhzu_taahud": 3, "aaa_ia": 58, "aaa_im": 35, "aaa_ada": 4, "aaa_belum": 5}, {"name": "PANTURA BARAT", "jumlah_mahaly": 2, "A": 52, "D": 122, "IA": 351, "IM": 52, "tokoh_teriayah": 27, "rkt_d_plus": 60, "rkt_d_minus": 9, "rkt_hp_plus": 73, "rkt_hp_minus": 18, "rkt_hu_plus": 192, "rkt_hu_minus": 131, "akhzu_sk": 7, "akhzu_sks": 3, "akhzu_sk_blm03": 4, "akhzu_taahud": 1, "aaa_ia": 11, "aaa_im": 1, "aaa_ada": 9, "aaa_belum": 2}, {"name": "PANTURA TIMUR", "jumlah_mahaly": 3, "A": 73, "D": 106, "IA": 415, "IM": 145, "tokoh_teriayah": 117, "rkt_d_plus": 34, "rkt_d_minus": 4, "rkt_hp_plus": 75, "rkt_hp_minus": 32, "rkt_hu_plus": 177, "rkt_hu_minus": 87, "akhzu_sk": 1, "akhzu_sks": 1, "akhzu_sk_blm03": 21, "akhzu_taahud": 0, "aaa_ia": 36, "aaa_im": 13, "aaa_ada": 0, "aaa_belum": 3}, {"name": "SOLO RAYA 1", "jumlah_mahaly": 6, "A": 156, "D": 443, "IA": 227, "IM": 202, "tokoh_teriayah": 78, "rkt_d_plus": 166, "rkt_d_minus": 17, "rkt_hp_plus": 282, "rkt_hp_minus": 33, "rkt_hu_plus": 465, "rkt_hu_minus": 89, "akhzu_sk": 25, "akhzu_sks": 17, "akhzu_sk_blm03": 48, "akhzu_taahud": 5, "aaa_ia": 55, "aaa_im": 19, "aaa_ada": 0, "aaa_belum": 5}, {"name": "SOLO RAYA 2", "jumlah_mahaly": 5, "A": 186, "D": 388, "IA": 1475, "IM": 249, "tokoh_teriayah": 94, "rkt_d_plus": 117, "rkt_d_minus": 22, "rkt_hp_plus": 230, "rkt_hp_minus": 75, "rkt_hu_plus": 484, "rkt_hu_minus": 164, "akhzu_sk": 19, "akhzu_sks": 36, "akhzu_sk_blm03": 29, "akhzu_taahud": 13, "aaa_ia": 42, "aaa_im": 27, "aaa_ada": 1, "aaa_belum": 4}], "DI Yogyakarta": [{"name": "DIY 1", "jumlah_mahaly": 12, "A": 344, "D": 658, "IA": 1074, "IM": 620, "tokoh_teriayah": 244, "rkt_d_plus": 205, "rkt_d_minus": 20, "rkt_hp_plus": 273, "rkt_hp_minus": 36, "rkt_hu_plus": 625, "rkt_hu_minus": 136, "akhzu_sk": 62, "akhzu_sks": 29, "akhzu_sk_blm03": 78, "akhzu_taahud": 10, "aaa_ia": 88, "aaa_im": 57, "aaa_ada": 3, "aaa_belum": 9}, {"name": "DIY 2", "jumlah_mahaly": 9, "A": 297, "D": 446, "IA": 1038, "IM": 348, "tokoh_teriayah": 154, "rkt_d_plus": 91, "rkt_d_minus": 2, "rkt_hp_plus": 176, "rkt_hp_minus": 44, "rkt_hu_plus": 387, "rkt_hu_minus": 71, "akhzu_sk": 30, "akhzu_sks": 17, "akhzu_sk_blm03": 21, "akhzu_taahud": 4, "aaa_ia": 346, "aaa_im": 53, "aaa_ada": 5, "aaa_belum": 4}], "Jawa Timur": [{"name": "MADIUN RAYA", "jumlah_mahaly": 9, "A": 299, "D": 537, "IA": 1067, "IM": 475, "tokoh_teriayah": 397, "rkt_d_plus": 107, "rkt_d_minus": 19, "rkt_hp_plus": 193, "rkt_hp_minus": 77, "rkt_hu_plus": 572, "rkt_hu_minus": 224, "akhzu_sk": 91, "akhzu_sks": 33, "akhzu_sk_blm03": 78, "akhzu_taahud": 8, "aaa_ia": 155, "aaa_im": 83, "aaa_ada": 5, "aaa_belum": 4}, {"name": "KEDIRI RAYA", "jumlah_mahaly": 13, "A": 421, "D": 919, "IA": 871, "IM": 713, "tokoh_teriayah": 388, "rkt_d_plus": 160, "rkt_d_minus": 18, "rkt_hp_plus": 252, "rkt_hp_minus": 47, "rkt_hu_plus": 590, "rkt_hu_minus": 237, "akhzu_sk": 82, "akhzu_sks": 44, "akhzu_sk_blm03": 54, "akhzu_taahud": 0, "aaa_ia": 170, "aaa_im": 122, "aaa_ada": 6, "aaa_belum": 8}, {"name": "BOJONEGORO RAYA", "jumlah_mahaly": 10, "A": 417, "D": 600, "IA": 1576, "IM": 998, "tokoh_teriayah": 206, "rkt_d_plus": 178, "rkt_d_minus": 41, "rkt_hp_plus": 391, "rkt_hp_minus": 104, "rkt_hu_plus": 852, "rkt_hu_minus": 263, "akhzu_sk": 55, "akhzu_sks": 64, "akhzu_sk_blm03": 32, "akhzu_taahud": 5, "aaa_ia": 102, "aaa_im": 90, "aaa_ada": 5, "aaa_belum": 5}, {"name": "SURABAYA 1", "jumlah_mahaly": 8, "A": 208, "D": 328, "IA": 939, "IM": 417, "tokoh_teriayah": 140, "rkt_d_plus": 96, "rkt_d_minus": 6, "rkt_hp_plus": 150, "rkt_hp_minus": 74, "rkt_hu_plus": 379, "rkt_hu_minus": 185, "akhzu_sk": 37, "akhzu_sks": 16, "akhzu_sk_blm03": 17, "akhzu_taahud": 0, "aaa_ia": 138, "aaa_im": 20, "aaa_ada": 6, "aaa_belum": 1}, {"name": "SURABAYA 2", "jumlah_mahaly": 10, "A": 307, "D": 459, "IA": 1544, "IM": 489, "tokoh_teriayah": 224, "rkt_d_plus": 117, "rkt_d_minus": 5, "rkt_hp_plus": 172, "rkt_hp_minus": 74, "rkt_hu_plus": 679, "rkt_hu_minus": 334, "akhzu_sk": 78, "akhzu_sks": 34, "akhzu_sk_blm03": 27, "akhzu_taahud": 8, "aaa_ia": 141, "aaa_im": 57, "aaa_ada": 8, "aaa_belum": 2}, {"name": "SIDOARJO", "jumlah_mahaly": 11, "A": 524, "D": 782, "IA": 971, "IM": 576, "tokoh_teriayah": 156, "rkt_d_plus": 218, "rkt_d_minus": 20, "rkt_hp_plus": 275, "rkt_hp_minus": 69, "rkt_hu_plus": 641, "rkt_hu_minus": 243, "akhzu_sk": 60, "akhzu_sks": 34, "akhzu_sk_blm03": 27, "akhzu_taahud": 4, "aaa_ia": 186, "aaa_im": 97, "aaa_ada": 8, "aaa_belum": 3}, {"name": "PASURUAN RAYA", "jumlah_mahaly": 13, "A": 383, "D": 727, "IA": 1336, "IM": 944, "tokoh_teriayah": 251, "rkt_d_plus": 213, "rkt_d_minus": 28, "rkt_hp_plus": 334, "rkt_hp_minus": 82, "rkt_hu_plus": 892, "rkt_hu_minus": 327, "akhzu_sk": 34, "akhzu_sks": 28, "akhzu_sk_blm03": 36, "akhzu_taahud": 1, "aaa_ia": 146, "aaa_im": 114, "aaa_ada": 6, "aaa_belum": 7}, {"name": "MALANG RAYA", "jumlah_mahaly": 15, "A": 409, "D": 778, "IA": 1353, "IM": 780, "tokoh_teriayah": 189, "rkt_d_plus": 220, "rkt_d_minus": 20, "rkt_hp_plus": 370, "rkt_hp_minus": 109, "rkt_hu_plus": 1102, "rkt_hu_minus": 428, "akhzu_sk": 81, "akhzu_sks": 55, "akhzu_sk_blm03": 71, "akhzu_taahud": 6, "aaa_ia": 130, "aaa_im": 64, "aaa_ada": 3, "aaa_belum": 12}, {"name": "JEMBER RAYA", "jumlah_mahaly": 13, "A": 401, "D": 912, "IA": 2025, "IM": 914, "tokoh_teriayah": 212, "rkt_d_plus": 183, "rkt_d_minus": 23, "rkt_hp_plus": 261, "rkt_hp_minus": 66, "rkt_hu_plus": 700, "rkt_hu_minus": 299, "akhzu_sk": 72, "akhzu_sks": 42, "akhzu_sk_blm03": 43, "akhzu_taahud": 18, "aaa_ia": 157, "aaa_im": 90, "aaa_ada": 7, "aaa_belum": 6}, {"name": "MADURA", "jumlah_mahaly": 6, "A": 161, "D": 177, "IA": 546, "IM": 259, "tokoh_teriayah": 99, "rkt_d_plus": 24, "rkt_d_minus": 9, "rkt_hp_plus": 40, "rkt_hp_minus": 16, "rkt_hu_plus": 179, "rkt_hu_minus": 98, "akhzu_sk": 45, "akhzu_sks": 31, "akhzu_sk_blm03": 32, "akhzu_taahud": 3, "aaa_ia": 46, "aaa_im": 12, "aaa_ada": 2, "aaa_belum": 4}], "Kalimantan Barat": [{"name": "KALBAR", "jumlah_mahaly": 4, "A": 107, "D": 142, "IA": 991, "IM": 440, "tokoh_teriayah": 405, "rkt_d_plus": 57, "rkt_d_minus": 9, "rkt_hp_plus": 98, "rkt_hp_minus": 30, "rkt_hu_plus": 415, "rkt_hu_minus": 183, "akhzu_sk": 80, "akhzu_sks": 25, "akhzu_sk_blm03": 222, "akhzu_taahud": 3, "aaa_ia": 10, "aaa_im": 10, "aaa_ada": 1, "aaa_belum": 3}], "Kalimantan Tengah": [{"name": "KALTENG 1", "jumlah_mahaly": 5, "A": 117, "D": 139, "IA": 321, "IM": 238, "tokoh_teriayah": 49, "rkt_d_plus": 33, "rkt_d_minus": 2, "rkt_hp_plus": 62, "rkt_hp_minus": 26, "rkt_hu_plus": 155, "rkt_hu_minus": 85, "akhzu_sk": 7, "akhzu_sks": 6, "akhzu_sk_blm03": 21, "akhzu_taahud": 0, "aaa_ia": 7, "aaa_im": 14, "aaa_ada": 1, "aaa_belum": 4}, {"name": "KALTENG 2", "jumlah_mahaly": 5, "A": 142, "D": 183, "IA": 575, "IM": 425, "tokoh_teriayah": 81, "rkt_d_plus": 61, "rkt_d_minus": 26, "rkt_hp_plus": 124, "rkt_hp_minus": 51, "rkt_hu_plus": 320, "rkt_hu_minus": 146, "akhzu_sk": 10, "akhzu_sks": 8, "akhzu_sk_blm03": 24, "akhzu_taahud": 2, "aaa_ia": 21, "aaa_im": 23, "aaa_ada": 1, "aaa_belum": 4}], "Kalimantan Selatan": [{"name": "KALSEL 1", "jumlah_mahaly": 14, "A": 395, "D": 604, "IA": 1237, "IM": 727, "tokoh_teriayah": 239, "rkt_d_plus": 240, "rkt_d_minus": 29, "rkt_hp_plus": 385, "rkt_hp_minus": 120, "rkt_hu_plus": 861, "rkt_hu_minus": 303, "akhzu_sk": 65, "akhzu_sks": 40, "akhzu_sk_blm03": 60, "akhzu_taahud": 16, "aaa_ia": 417, "aaa_im": 126, "aaa_ada": 5, "aaa_belum": 9}, {"name": "KALSEL 2", "jumlah_mahaly": 4, "A": 124, "D": 116, "IA": 413, "IM": 262, "tokoh_teriayah": 9, "rkt_d_plus": 13, "rkt_d_minus": 4, "rkt_hp_plus": 29, "rkt_hp_minus": 26, "rkt_hu_plus": 128, "rkt_hu_minus": 60, "akhzu_sk": 1, "akhzu_sks": 1, "akhzu_sk_blm03": 6, "akhzu_taahud": 0, "aaa_ia": 0, "aaa_im": 0, "aaa_ada": 0, "aaa_belum": 4}, {"name": "KALSEL 3", "jumlah_mahaly": 6, "A": 168, "D": 219, "IA": 561, "IM": 281, "tokoh_teriayah": 39, "rkt_d_plus": 83, "rkt_d_minus": 18, "rkt_hp_plus": 163, "rkt_hp_minus": 72, "rkt_hu_plus": 584, "rkt_hu_minus": 235, "akhzu_sk": 30, "akhzu_sks": 16, "akhzu_sk_blm03": 25, "akhzu_taahud": 6, "aaa_ia": 103, "aaa_im": 54, "aaa_ada": 4, "aaa_belum": 2}], "Kalimantan Timur": [{"name": "KALTIM 1", "jumlah_mahaly": 12, "A": 395, "D": 635, "IA": 1353, "IM": 801, "tokoh_teriayah": 303, "rkt_d_plus": 193, "rkt_d_minus": 44, "rkt_hp_plus": 333, "rkt_hp_minus": 119, "rkt_hu_plus": 844, "rkt_hu_minus": 400, "akhzu_sk": 97, "akhzu_sks": 64, "akhzu_sk_blm03": 65, "akhzu_taahud": 3, "aaa_ia": 218, "aaa_im": 109, "aaa_ada": 3, "aaa_belum": 9}, {"name": "KALTIM 2", "jumlah_mahaly": 10, "A": 444, "D": 502, "IA": 1490, "IM": 620, "tokoh_teriayah": 168, "rkt_d_plus": 175, "rkt_d_minus": 33, "rkt_hp_plus": 265, "rkt_hp_minus": 103, "rkt_hu_plus": 670, "rkt_hu_minus": 365, "akhzu_sk": 52, "akhzu_sks": 35, "akhzu_sk_blm03": 50, "akhzu_taahud": 7, "aaa_ia": 138, "aaa_im": 87, "aaa_ada": 4, "aaa_belum": 6}], "Kalimantan Utara": [{"name": "KALTARA", "jumlah_mahaly": 3, "A": 29, "D": 28, "IA": 140, "IM": 40, "tokoh_teriayah": 9, "rkt_d_plus": 4, "rkt_d_minus": 2, "rkt_hp_plus": 10, "rkt_hp_minus": 1, "rkt_hu_plus": 6, "rkt_hu_minus": 7, "akhzu_sk": 4, "akhzu_sks": 2, "akhzu_sk_blm03": 3, "akhzu_taahud": 3, "aaa_ia": 11, "aaa_im": 4, "aaa_ada": 1, "aaa_belum": 1}], "Sulawesi Selatan": [{"name": "SULSEL 1", "jumlah_mahaly": 13, "A": 437, "D": 552, "IA": 1142, "IM": 635, "tokoh_teriayah": 352, "rkt_d_plus": 181, "rkt_d_minus": 11, "rkt_hp_plus": 343, "rkt_hp_minus": 105, "rkt_hu_plus": 923, "rkt_hu_minus": 319, "akhzu_sk": 70, "akhzu_sks": 39, "akhzu_sk_blm03": 40, "akhzu_taahud": 12, "aaa_ia": 239, "aaa_im": 38, "aaa_ada": 10, "aaa_belum": 4}, {"name": "SULSEL 2", "jumlah_mahaly": 7, "A": 208, "D": 364, "IA": 226, "IM": 274, "tokoh_teriayah": 58, "rkt_d_plus": 42, "rkt_d_minus": 16, "rkt_hp_plus": 66, "rkt_hp_minus": 29, "rkt_hu_plus": 242, "rkt_hu_minus": 118, "akhzu_sk": 14, "akhzu_sks": 7, "akhzu_sk_blm03": 7, "akhzu_taahud": 7, "aaa_ia": 50, "aaa_im": 22, "aaa_ada": 1, "aaa_belum": 6}, {"name": "SULSEL 3", "jumlah_mahaly": 7, "A": 196, "D": 215, "IA": 641, "IM": 339, "tokoh_teriayah": 69, "rkt_d_plus": 66, "rkt_d_minus": 14, "rkt_hp_plus": 133, "rkt_hp_minus": 36, "rkt_hu_plus": 288, "rkt_hu_minus": 119, "akhzu_sk": 17, "akhzu_sks": 7, "akhzu_sk_blm03": 14, "akhzu_taahud": 15, "aaa_ia": 113, "aaa_im": 55, "aaa_ada": 3, "aaa_belum": 4}, {"name": "SULSEL 4", "jumlah_mahaly": 7, "A": 222, "D": 259, "IA": 302, "IM": 148, "tokoh_teriayah": 39, "rkt_d_plus": 61, "rkt_d_minus": 23, "rkt_hp_plus": 103, "rkt_hp_minus": 46, "rkt_hu_plus": 598, "rkt_hu_minus": 360, "akhzu_sk": 15, "akhzu_sks": 20, "akhzu_sk_blm03": 10, "akhzu_taahud": 8, "aaa_ia": 31, "aaa_im": 19, "aaa_ada": 4, "aaa_belum": 3}], "Sulawesi Barat": [{"name": "SULBAR", "jumlah_mahaly": 3, "A": 30, "D": 32, "IA": 55, "IM": 27, "tokoh_teriayah": 20, "rkt_d_plus": 7, "rkt_d_minus": 1, "rkt_hp_plus": 7, "rkt_hp_minus": 2, "rkt_hu_plus": 26, "rkt_hu_minus": 14, "akhzu_sk": 0, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_taahud": 0, "aaa_ia": 7, "aaa_im": 2, "aaa_ada": 0, "aaa_belum": 1}], "Sulawesi Tenggara": [{"name": "SULTRA 1", "jumlah_mahaly": 9, "A": 358, "D": 679, "IA": 920, "IM": 633, "tokoh_teriayah": 90, "rkt_d_plus": 126, "rkt_d_minus": 20, "rkt_hp_plus": 176, "rkt_hp_minus": 27, "rkt_hu_plus": 527, "rkt_hu_minus": 172, "akhzu_sk": 31, "akhzu_sks": 15, "akhzu_sk_blm03": 18, "akhzu_taahud": 20, "aaa_ia": 148, "aaa_im": 63, "aaa_ada": 3, "aaa_belum": 6}, {"name": "SULTRA 2", "jumlah_mahaly": 8, "A": 291, "D": 380, "IA": 251, "IM": 297, "tokoh_teriayah": 55, "rkt_d_plus": 74, "rkt_d_minus": 6, "rkt_hp_plus": 158, "rkt_hp_minus": 37, "rkt_hu_plus": 506, "rkt_hu_minus": 142, "akhzu_sk": 7, "akhzu_sks": 11, "akhzu_sk_blm03": 27, "akhzu_taahud": 9, "aaa_ia": 36, "aaa_im": 105, "aaa_ada": 4, "aaa_belum": 4}, {"name": "SULTRA 3", "jumlah_mahaly": 4, "A": 60, "D": 84, "IA": 289, "IM": 96, "tokoh_teriayah": 36, "rkt_d_plus": 21, "rkt_d_minus": 4, "rkt_hp_plus": 36, "rkt_hp_minus": 7, "rkt_hu_plus": 145, "rkt_hu_minus": 85, "akhzu_sk": 1, "akhzu_sks": 6, "akhzu_sk_blm03": 16, "akhzu_taahud": 4, "aaa_ia": 34, "aaa_im": 12, "aaa_ada": 4, "aaa_belum": 0}, {"name": "SULTRA 4", "jumlah_mahaly": 8, "A": 0, "D": 0, "IA": 0, "IM": 0, "tokoh_teriayah": 0, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "akhzu_sk": 0, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_taahud": 0, "aaa_ia": 0, "aaa_im": 0, "aaa_ada": 0, "aaa_belum": 0}], "Sulawesi Tengah": [{"name": "SULTENG", "jumlah_mahaly": 6, "A": 177, "D": 213, "IA": 363, "IM": 273, "tokoh_teriayah": 67, "rkt_d_plus": 59, "rkt_d_minus": 15, "rkt_hp_plus": 92, "rkt_hp_minus": 41, "rkt_hu_plus": 283, "rkt_hu_minus": 132, "akhzu_sk": 11, "akhzu_sks": 5, "akhzu_sk_blm03": 9, "akhzu_taahud": 2, "aaa_ia": 49, "aaa_im": 7, "aaa_ada": 3, "aaa_belum": 4}], "Gorontalo": [{"name": "GTO", "jumlah_mahaly": 4, "A": 119, "D": 145, "IA": 584, "IM": 250, "tokoh_teriayah": 53, "rkt_d_plus": 31, "rkt_d_minus": 3, "rkt_hp_plus": 93, "rkt_hp_minus": 23, "rkt_hu_plus": 345, "rkt_hu_minus": 166, "akhzu_sk": 16, "akhzu_sks": 10, "akhzu_sk_blm03": 19, "akhzu_taahud": 0, "aaa_ia": 20, "aaa_im": 8, "aaa_ada": 1, "aaa_belum": 3}], "Maluku Utara": [{"name": "MALUT", "jumlah_mahaly": 6, "A": 135, "D": 181, "IA": 288, "IM": 364, "tokoh_teriayah": 57, "rkt_d_plus": 38, "rkt_d_minus": 7, "rkt_hp_plus": 68, "rkt_hp_minus": 18, "rkt_hu_plus": 338, "rkt_hu_minus": 166, "akhzu_sk": 17, "akhzu_sks": 8, "akhzu_sk_blm03": 13, "akhzu_taahud": 0, "aaa_ia": 3, "aaa_im": 11, "aaa_ada": 0, "aaa_belum": 6}], "Maluku": [{"name": "MALUKU", "jumlah_mahaly": 4, "A": 48, "D": 77, "IA": 303, "IM": 91, "tokoh_teriayah": 8, "rkt_d_plus": 21, "rkt_d_minus": 2, "rkt_hp_plus": 17, "rkt_hp_minus": 0, "rkt_hu_plus": 41, "rkt_hu_minus": 62, "akhzu_sk": 3, "akhzu_sks": 2, "akhzu_sk_blm03": 14, "akhzu_taahud": 2, "aaa_ia": 29, "aaa_im": 14, "aaa_ada": 2, "aaa_belum": 0}], "Bali": [{"name": "BALI", "jumlah_mahaly": 2, "A": 35, "D": 49, "IA": 102, "IM": 89, "tokoh_teriayah": 22, "rkt_d_plus": 15, "rkt_d_minus": 2, "rkt_hp_plus": 26, "rkt_hp_minus": 11, "rkt_hu_plus": 77, "rkt_hu_minus": 42, "akhzu_sk": 13, "akhzu_sks": 1, "akhzu_sk_blm03": 7, "akhzu_taahud": 0, "aaa_ia": 21, "aaa_im": 17, "aaa_ada": 1, "aaa_belum": 1}], "Nusa Tenggara Timur": [{"name": "NTT", "jumlah_mahaly": 2, "A": 38, "D": 59, "IA": 267, "IM": 140, "tokoh_teriayah": 9, "rkt_d_plus": 11, "rkt_d_minus": 1, "rkt_hp_plus": 27, "rkt_hp_minus": 5, "rkt_hu_plus": 60, "rkt_hu_minus": 19, "akhzu_sk": 8, "akhzu_sks": 3, "akhzu_sk_blm03": 4, "akhzu_taahud": 1, "aaa_ia": 20, "aaa_im": 6, "aaa_ada": 1, "aaa_belum": 1}], "Nusa Tenggara Barat": [{"name": "MATARAM", "jumlah_mahaly": 9, "A": 119, "D": 112, "IA": 444, "IM": 98, "tokoh_teriayah": 113, "rkt_d_plus": 26, "rkt_d_minus": 4, "rkt_hp_plus": 40, "rkt_hp_minus": 10, "rkt_hu_plus": 127, "rkt_hu_minus": 52, "akhzu_sk": 18, "akhzu_sks": 6, "akhzu_sk_blm03": 1, "akhzu_taahud": 12, "aaa_ia": 10, "aaa_im": 4, "aaa_ada": 3, "aaa_belum": 4}, {"name": "SUMBAWA", "jumlah_mahaly": 4, "A": 89, "D": 121, "IA": 315, "IM": 87, "tokoh_teriayah": 67, "rkt_d_plus": 22, "rkt_d_minus": 2, "rkt_hp_plus": 30, "rkt_hp_minus": 11, "rkt_hu_plus": 118, "rkt_hu_minus": 57, "akhzu_sk": 16, "akhzu_sks": 4, "akhzu_sk_blm03": 4, "akhzu_taahud": 1, "aaa_ia": 25, "aaa_im": 10, "aaa_ada": 0, "aaa_belum": 4}], "Papua": [{"name": "PAPUA", "jumlah_mahaly": 4, "A": 86, "D": 180, "IA": 759, "IM": 213, "tokoh_teriayah": 40, "rkt_d_plus": 91, "rkt_d_minus": 12, "rkt_hp_plus": 172, "rkt_hp_minus": 69, "rkt_hu_plus": 417, "rkt_hu_minus": 196, "akhzu_sk": 29, "akhzu_sks": 8, "akhzu_sk_blm03": 29, "akhzu_taahud": 2, "aaa_ia": 21, "aaa_im": 20, "aaa_ada": 2, "aaa_belum": 2}]};
+
+const LJ_DATA = {"Aceh": [{"name": "ACEH", "database": 295, "tokoh_teriayah": 126, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 0, "opini_belum": 4, "opini_mudah": 4, "opini_tidak_mudah": 0, "akhzu_sk": 11, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 0, "akhzu_taahud": 0}, {"name": "ACEH 1", "database": 310, "tokoh_teriayah": 164, "rkt_d_plus": 4, "rkt_d_minus": 2, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 4, "rkt_hu_minus": 0, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 19, "akhzu_sks": 10, "akhzu_sk_blm03": 16, "akhzu_diberdayakan": 6, "akhzu_taahud": 0}, {"name": "ACEH 2", "database": 250, "tokoh_teriayah": 99, "rkt_d_plus": 4, "rkt_d_minus": 2, "rkt_hp_plus": 11, "rkt_hp_minus": 4, "rkt_hu_plus": 28, "rkt_hu_minus": 2, "opini_selalu": 1, "opini_belum": 5, "opini_mudah": 5, "opini_tidak_mudah": 5, "akhzu_sk": 19, "akhzu_sks": 7, "akhzu_sk_blm03": 24, "akhzu_diberdayakan": 16, "akhzu_taahud": 7}], "Kepulauan Bangka Belitung": [{"name": "BABEL", "database": 42, "tokoh_teriayah": 22, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 2, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 3, "akhzu_sk": 5, "akhzu_sks": 1, "akhzu_sk_blm03": 12, "akhzu_diberdayakan": 0, "akhzu_taahud": 1}], "Sumatera Barat": [{"name": "SUMBAR 1", "database": 23, "tokoh_teriayah": 4, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 4, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 0, "akhzu_sk": 1, "akhzu_sks": 1, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}, {"name": "SUMBAR 2", "database": 140, "tokoh_teriayah": 49, "rkt_d_plus": 7, "rkt_d_minus": 4, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 6, "rkt_hu_minus": 10, "opini_selalu": 0, "opini_belum": 1, "opini_mudah": 1, "opini_tidak_mudah": 2, "akhzu_sk": 13, "akhzu_sks": 9, "akhzu_sk_blm03": 6, "akhzu_diberdayakan": 0, "akhzu_taahud": 0}], "Sumatera Selatan": [{"name": "SUMSEL", "database": 180, "tokoh_teriayah": 140, "rkt_d_plus": 19, "rkt_d_minus": 0, "rkt_hp_plus": 25, "rkt_hp_minus": 4, "rkt_hu_plus": 51, "rkt_hu_minus": 11, "opini_selalu": 1, "opini_belum": 3, "opini_mudah": 3, "opini_tidak_mudah": 1, "akhzu_sk": 63, "akhzu_sks": 55, "akhzu_sk_blm03": 4, "akhzu_diberdayakan": 14, "akhzu_taahud": 5}, {"name": "SUMSEL 1", "database": 156, "tokoh_teriayah": 126, "rkt_d_plus": 5, "rkt_d_minus": 2, "rkt_hp_plus": 10, "rkt_hp_minus": 1, "rkt_hu_plus": 22, "rkt_hu_minus": 2, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 24, "akhzu_sks": 15, "akhzu_sk_blm03": 24, "akhzu_diberdayakan": 4, "akhzu_taahud": 2}, {"name": "SUMSEL 2", "database": 107, "tokoh_teriayah": 39, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 3, "rkt_hu_minus": 1, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 3, "opini_tidak_mudah": 3, "akhzu_sk": 6, "akhzu_sks": 2, "akhzu_sk_blm03": 1, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}], "Sumatera Utara": [{"name": "SUMUT 1", "database": 180, "tokoh_teriayah": 80, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 11, "rkt_hu_minus": 6, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 5, "akhzu_sks": 5, "akhzu_sk_blm03": 5, "akhzu_diberdayakan": 7, "akhzu_taahud": 2}, {"name": "SUMUT 2A", "database": 93, "tokoh_teriayah": 67, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 2, "rkt_hu_minus": 1, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 16, "akhzu_sks": 7, "akhzu_sk_blm03": 29, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}, {"name": "SUMUT 3", "database": 267, "tokoh_teriayah": 208, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 8, "rkt_hu_minus": 4, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 3, "opini_tidak_mudah": 1, "akhzu_sk": 68, "akhzu_sks": 24, "akhzu_sk_blm03": 50, "akhzu_diberdayakan": 19, "akhzu_taahud": 5}, {"name": "SUMUT 4", "database": 122, "tokoh_teriayah": 43, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 7, "rkt_hu_minus": 3, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 15, "akhzu_sks": 2, "akhzu_sk_blm03": 11, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}], "Lampung": [{"name": "LAMPUNG 1", "database": 52, "tokoh_teriayah": 17, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 8, "rkt_hu_minus": 0, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 1, "opini_tidak_mudah": 1, "akhzu_sk": 2, "akhzu_sks": 3, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 1, "akhzu_taahud": 1}, {"name": "LAMPUNG 2", "database": 191, "tokoh_teriayah": 105, "rkt_d_plus": 2, "rkt_d_minus": 0, "rkt_hp_plus": 4, "rkt_hp_minus": 4, "rkt_hu_plus": 12, "rkt_hu_minus": 7, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 4, "opini_tidak_mudah": 1, "akhzu_sk": 9, "akhzu_sks": 12, "akhzu_sk_blm03": 3, "akhzu_diberdayakan": 3, "akhzu_taahud": 3}, {"name": "LAMPUNG 3", "database": 234, "tokoh_teriayah": 148, "rkt_d_plus": 2, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 4, "rkt_hu_plus": 20, "rkt_hu_minus": 4, "opini_selalu": 2, "opini_belum": 4, "opini_mudah": 4, "opini_tidak_mudah": 4, "akhzu_sk": 16, "akhzu_sks": 14, "akhzu_sk_blm03": 12, "akhzu_diberdayakan": 0, "akhzu_taahud": 0}], "Bengkulu": [{"name": "BENGKULU", "database": 44, "tokoh_teriayah": 25, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 1, "rkt_hu_plus": 1, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 2, "akhzu_sks": 3, "akhzu_sk_blm03": 1, "akhzu_diberdayakan": 2, "akhzu_taahud": 1}], "Jambi": [{"name": "JAMBI", "database": 123, "tokoh_teriayah": 48, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 11, "rkt_hu_minus": 4, "opini_selalu": 0, "opini_belum": 3, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 20, "akhzu_sks": 4, "akhzu_sk_blm03": 33, "akhzu_diberdayakan": 10, "akhzu_taahud": 0}], "Riau": [{"name": "RIAU 2", "database": 76, "tokoh_teriayah": 14, "rkt_d_plus": 2, "rkt_d_minus": 1, "rkt_hp_plus": 2, "rkt_hp_minus": 2, "rkt_hu_plus": 5, "rkt_hu_minus": 2, "opini_selalu": 0, "opini_belum": 1, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 3, "akhzu_sks": 3, "akhzu_sk_blm03": 3, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}, {"name": "RIAU 3", "database": 38, "tokoh_teriayah": 36, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 1, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 0, "akhzu_sk": 0, "akhzu_sks": 11, "akhzu_sk_blm03": 9, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}], "Banten": [{"name": "BANTEN", "database": 105, "tokoh_teriayah": 66, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 7, "rkt_hu_minus": 4, "opini_selalu": 2, "opini_belum": 2, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 24, "akhzu_sks": 13, "akhzu_sk_blm03": 19, "akhzu_diberdayakan": 9, "akhzu_taahud": 3}, {"name": "BANTEN BARAT", "database": 144, "tokoh_teriayah": 93, "rkt_d_plus": 4, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 3, "rkt_hu_minus": 3, "opini_selalu": 0, "opini_belum": 6, "opini_mudah": 2, "opini_tidak_mudah": 5, "akhzu_sk": 24, "akhzu_sks": 12, "akhzu_sk_blm03": 20, "akhzu_diberdayakan": 7, "akhzu_taahud": 2}, {"name": "BANTEN TIMUR", "database": 326, "tokoh_teriayah": 180, "rkt_d_plus": 4, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 2, "rkt_hu_plus": 13, "rkt_hu_minus": 11, "opini_selalu": 8, "opini_belum": 0, "opini_mudah": 8, "opini_tidak_mudah": 0, "akhzu_sk": 2, "akhzu_sks": 8, "akhzu_sk_blm03": 7, "akhzu_diberdayakan": 16, "akhzu_taahud": 1}], "DKI Jakarta": [{"name": "DKI", "database": 248, "tokoh_teriayah": 103, "rkt_d_plus": 5, "rkt_d_minus": 4, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 20, "rkt_hu_minus": 6, "opini_selalu": 1, "opini_belum": 3, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 34, "akhzu_sks": 38, "akhzu_sk_blm03": 17, "akhzu_diberdayakan": 39, "akhzu_taahud": 1}, {"name": "DKI 1", "database": 194, "tokoh_teriayah": 113, "rkt_d_plus": 7, "rkt_d_minus": 2, "rkt_hp_plus": 12, "rkt_hp_minus": 1, "rkt_hu_plus": 29, "rkt_hu_minus": 0, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 1, "opini_tidak_mudah": 3, "akhzu_sk": 32, "akhzu_sks": 21, "akhzu_sk_blm03": 34, "akhzu_diberdayakan": 13, "akhzu_taahud": 4}, {"name": "DKI 2", "database": 77, "tokoh_teriayah": 56, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 4, "rkt_hp_minus": 0, "rkt_hu_plus": 13, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 6, "akhzu_sks": 19, "akhzu_sk_blm03": 25, "akhzu_diberdayakan": 9, "akhzu_taahud": 2}, {"name": "DKI 3", "database": 140, "tokoh_teriayah": 135, "rkt_d_plus": 3, "rkt_d_minus": 2, "rkt_hp_plus": 6, "rkt_hp_minus": 3, "rkt_hu_plus": 21, "rkt_hu_minus": 8, "opini_selalu": 3, "opini_belum": 9, "opini_mudah": 1, "opini_tidak_mudah": 2, "akhzu_sk": 24, "akhzu_sks": 16, "akhzu_sk_blm03": 11, "akhzu_diberdayakan": 19, "akhzu_taahud": 6}], "Jawa Barat": [{"name": "JABAR", "database": 189, "tokoh_teriayah": 123, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 8, "rkt_hp_minus": 1, "rkt_hu_plus": 16, "rkt_hu_minus": 1, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 16, "akhzu_sks": 10, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 41, "akhzu_taahud": 4}, {"name": "DEPOK", "database": 99, "tokoh_teriayah": 63, "rkt_d_plus": 7, "rkt_d_minus": 1, "rkt_hp_plus": 12, "rkt_hp_minus": 4, "rkt_hu_plus": 21, "rkt_hu_minus": 4, "opini_selalu": 1, "opini_belum": 2, "opini_mudah": 0, "opini_tidak_mudah": 3, "akhzu_sk": 47, "akhzu_sks": 24, "akhzu_sk_blm03": 48, "akhzu_diberdayakan": 12, "akhzu_taahud": 3}, {"name": "BEKASI RAYA", "database": 110, "tokoh_teriayah": 83, "rkt_d_plus": 7, "rkt_d_minus": 0, "rkt_hp_plus": 4, "rkt_hp_minus": 0, "rkt_hu_plus": 11, "rkt_hu_minus": 1, "opini_selalu": 2, "opini_belum": 0, "opini_mudah": 3, "opini_tidak_mudah": 1, "akhzu_sk": 14, "akhzu_sks": 5, "akhzu_sk_blm03": 2, "akhzu_diberdayakan": 18, "akhzu_taahud": 3}, {"name": "BOGOR KOTA 1", "database": 197, "tokoh_teriayah": 138, "rkt_d_plus": 4, "rkt_d_minus": 1, "rkt_hp_plus": 19, "rkt_hp_minus": 3, "rkt_hu_plus": 38, "rkt_hu_minus": 7, "opini_selalu": 6, "opini_belum": 0, "opini_mudah": 5, "opini_tidak_mudah": 1, "akhzu_sk": 39, "akhzu_sks": 35, "akhzu_sk_blm03": 27, "akhzu_diberdayakan": 16, "akhzu_taahud": 12}, {"name": "BOGOR KABUPATEN 1", "database": 179, "tokoh_teriayah": 86, "rkt_d_plus": 3, "rkt_d_minus": 1, "rkt_hp_plus": 4, "rkt_hp_minus": 2, "rkt_hu_plus": 15, "rkt_hu_minus": 7, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 3, "opini_tidak_mudah": 2, "akhzu_sk": 26, "akhzu_sks": 10, "akhzu_sk_blm03": 6, "akhzu_diberdayakan": 4, "akhzu_taahud": 2}, {"name": "SUKABUMI", "database": 192, "tokoh_teriayah": 116, "rkt_d_plus": 5, "rkt_d_minus": 0, "rkt_hp_plus": 5, "rkt_hp_minus": 2, "rkt_hu_plus": 12, "rkt_hu_minus": 3, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 15, "akhzu_sks": 10, "akhzu_sk_blm03": 9, "akhzu_diberdayakan": 15, "akhzu_taahud": 2}, {"name": "BANDUNG KOTA 1", "database": 177, "tokoh_teriayah": 87, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 4, "rkt_hp_minus": 0, "rkt_hu_plus": 5, "rkt_hu_minus": 0, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 4, "opini_tidak_mudah": 1, "akhzu_sk": 5, "akhzu_sks": 10, "akhzu_sk_blm03": 8, "akhzu_diberdayakan": 3, "akhzu_taahud": 0}, {"name": "BANDUNG BARAT", "database": 42, "tokoh_teriayah": 24, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 0, "akhzu_sk": 2, "akhzu_sks": 1, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 1, "akhzu_taahud": 0}, {"name": "BANDUNG KABUPATEN 1", "database": 244, "tokoh_teriayah": 104, "rkt_d_plus": 2, "rkt_d_minus": 1, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 15, "rkt_hu_minus": 0, "opini_selalu": 3, "opini_belum": 2, "opini_mudah": 0, "opini_tidak_mudah": 4, "akhzu_sk": 11, "akhzu_sks": 14, "akhzu_sk_blm03": 8, "akhzu_diberdayakan": 30, "akhzu_taahud": 9}, {"name": "KABUPATEN BANDUNG BARAT", "database": 151, "tokoh_teriayah": 106, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 3, "rkt_hu_minus": 0, "opini_selalu": 4, "opini_belum": 4, "opini_mudah": 4, "opini_tidak_mudah": 0, "akhzu_sk": 6, "akhzu_sks": 1, "akhzu_sk_blm03": 4, "akhzu_diberdayakan": 4, "akhzu_taahud": 0}, {"name": "SUMEDANG", "database": 34, "tokoh_teriayah": 9, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 2, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 0, "akhzu_taahud": 1}, {"name": "SUMEDANG RAYA", "database": 194, "tokoh_teriayah": 76, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 9, "rkt_hu_minus": 0, "opini_selalu": 2, "opini_belum": 1, "opini_mudah": 1, "opini_tidak_mudah": 2, "akhzu_sk": 14, "akhzu_sks": 11, "akhzu_sk_blm03": 6, "akhzu_diberdayakan": 5, "akhzu_taahud": 1}, {"name": "CIREBON", "database": 424, "tokoh_teriayah": 231, "rkt_d_plus": 8, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 26, "rkt_hu_minus": 4, "opini_selalu": 4, "opini_belum": 3, "opini_mudah": 7, "opini_tidak_mudah": 1, "akhzu_sk": 44, "akhzu_sks": 14, "akhzu_sk_blm03": 37, "akhzu_diberdayakan": 34, "akhzu_taahud": 0}, {"name": "GARUT", "database": 191, "tokoh_teriayah": 153, "rkt_d_plus": 7, "rkt_d_minus": 4, "rkt_hp_plus": 14, "rkt_hp_minus": 0, "rkt_hu_plus": 31, "rkt_hu_minus": 2, "opini_selalu": 1, "opini_belum": 2, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 24, "akhzu_sks": 3, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 9, "akhzu_taahud": 0}, {"name": "PRIATIM", "database": 159, "tokoh_teriayah": 71, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 8, "rkt_hu_minus": 0, "opini_selalu": 3, "opini_belum": 2, "opini_mudah": 5, "opini_tidak_mudah": 0, "akhzu_sk": 21, "akhzu_sks": 9, "akhzu_sk_blm03": 3, "akhzu_diberdayakan": 4, "akhzu_taahud": 0}], "Jawa Tengah": [{"name": "JATENG", "database": 271, "tokoh_teriayah": 210, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 9, "rkt_hp_minus": 1, "rkt_hu_plus": 15, "rkt_hu_minus": 8, "opini_selalu": 0, "opini_belum": 4, "opini_mudah": 1, "opini_tidak_mudah": 3, "akhzu_sk": 33, "akhzu_sks": 22, "akhzu_sk_blm03": 9, "akhzu_diberdayakan": 15, "akhzu_taahud": 9}, {"name": "KEDURAYA", "database": 190, "tokoh_teriayah": 136, "rkt_d_plus": 4, "rkt_d_minus": 0, "rkt_hp_plus": 6, "rkt_hp_minus": 2, "rkt_hu_plus": 2, "rkt_hu_minus": 7, "opini_selalu": 1, "opini_belum": 3, "opini_mudah": 1, "opini_tidak_mudah": 3, "akhzu_sk": 14, "akhzu_sks": 10, "akhzu_sk_blm03": 35, "akhzu_diberdayakan": 12, "akhzu_taahud": 1}, {"name": "BARLINGMAS", "database": 243, "tokoh_teriayah": 171, "rkt_d_plus": 7, "rkt_d_minus": 0, "rkt_hp_plus": 5, "rkt_hp_minus": 2, "rkt_hu_plus": 25, "rkt_hu_minus": 11, "opini_selalu": 4, "opini_belum": 1, "opini_mudah": 3, "opini_tidak_mudah": 2, "akhzu_sk": 62, "akhzu_sks": 37, "akhzu_sk_blm03": 45, "akhzu_diberdayakan": 3, "akhzu_taahud": 5}, {"name": "CILACAP", "database": 120, "tokoh_teriayah": 106, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 5, "rkt_hu_minus": 1, "opini_selalu": 2, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 1, "akhzu_sk": 9, "akhzu_sks": 7, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 6, "akhzu_taahud": 2}, {"name": "SEMARANG", "database": 125, "tokoh_teriayah": 68, "rkt_d_plus": 0, "rkt_d_minus": 1, "rkt_hp_plus": 9, "rkt_hp_minus": 0, "rkt_hu_plus": 14, "rkt_hu_minus": 1, "opini_selalu": 1, "opini_belum": 2, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 8, "akhzu_sks": 17, "akhzu_sk_blm03": 15, "akhzu_diberdayakan": 7, "akhzu_taahud": 0}, {"name": "PANTURA BARAT", "database": 185, "tokoh_teriayah": 111, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 5, "rkt_hu_minus": 0, "opini_selalu": 2, "opini_belum": 2, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 3, "akhzu_sks": 8, "akhzu_sk_blm03": 3, "akhzu_diberdayakan": 9, "akhzu_taahud": 4}, {"name": "PANTURA TIMUR", "database": 159, "tokoh_teriayah": 114, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 10, "rkt_hu_minus": 4, "opini_selalu": 2, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 40, "akhzu_sks": 9, "akhzu_sk_blm03": 13, "akhzu_diberdayakan": 14, "akhzu_taahud": 0}, {"name": "SOLO 1", "database": 261, "tokoh_teriayah": 207, "rkt_d_plus": 6, "rkt_d_minus": 0, "rkt_hp_plus": 7, "rkt_hp_minus": 0, "rkt_hu_plus": 18, "rkt_hu_minus": 7, "opini_selalu": 2, "opini_belum": 2, "opini_mudah": 4, "opini_tidak_mudah": 3, "akhzu_sk": 53, "akhzu_sks": 56, "akhzu_sk_blm03": 41, "akhzu_diberdayakan": 6, "akhzu_taahud": 5}, {"name": "SOLO 2", "database": 168, "tokoh_teriayah": 93, "rkt_d_plus": 5, "rkt_d_minus": 0, "rkt_hp_plus": 11, "rkt_hp_minus": 0, "rkt_hu_plus": 10, "rkt_hu_minus": 10, "opini_selalu": 3, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 29, "akhzu_sks": 14, "akhzu_sk_blm03": 14, "akhzu_diberdayakan": 10, "akhzu_taahud": 2}], "DI Yogyakarta": [{"name": "M DIY", "database": 218, "tokoh_teriayah": 140, "rkt_d_plus": 13, "rkt_d_minus": 2, "rkt_hp_plus": 19, "rkt_hp_minus": 0, "rkt_hu_plus": 29, "rkt_hu_minus": 7, "opini_selalu": 4, "opini_belum": 0, "opini_mudah": 4, "opini_tidak_mudah": 0, "akhzu_sk": 54, "akhzu_sks": 22, "akhzu_sk_blm03": 15, "akhzu_diberdayakan": 25, "akhzu_taahud": 5}, {"name": "DIY 1", "database": 359, "tokoh_teriayah": 286, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 14, "rkt_hu_minus": 3, "opini_selalu": 0, "opini_belum": 5, "opini_mudah": 1, "opini_tidak_mudah": 3, "akhzu_sk": 2, "akhzu_sks": 13, "akhzu_sk_blm03": 2, "akhzu_diberdayakan": 34, "akhzu_taahud": 3}, {"name": "DIY 2", "database": 198, "tokoh_teriayah": 141, "rkt_d_plus": 3, "rkt_d_minus": 2, "rkt_hp_plus": 6, "rkt_hp_minus": 0, "rkt_hu_plus": 14, "rkt_hu_minus": 6, "opini_selalu": 3, "opini_belum": 2, "opini_mudah": 1, "opini_tidak_mudah": 4, "akhzu_sk": 28, "akhzu_sks": 24, "akhzu_sk_blm03": 11, "akhzu_diberdayakan": 4, "akhzu_taahud": 1}], "Jawa Timur": [{"name": "MADIUN RAYA", "database": 486, "tokoh_teriayah": 302, "rkt_d_plus": 7, "rkt_d_minus": 0, "rkt_hp_plus": 12, "rkt_hp_minus": 5, "rkt_hu_plus": 24, "rkt_hu_minus": 9, "opini_selalu": 3, "opini_belum": 5, "opini_mudah": 3, "opini_tidak_mudah": 5, "akhzu_sk": 29, "akhzu_sks": 21, "akhzu_sk_blm03": 12, "akhzu_diberdayakan": 8, "akhzu_taahud": 1}, {"name": "KEDIRI RAYA", "database": 338, "tokoh_teriayah": 286, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 1, "rkt_hu_plus": 17, "rkt_hu_minus": 6, "opini_selalu": 3, "opini_belum": 4, "opini_mudah": 7, "opini_tidak_mudah": 2, "akhzu_sk": 49, "akhzu_sks": 11, "akhzu_sk_blm03": 39, "akhzu_diberdayakan": 19, "akhzu_taahud": 3}, {"name": "BOJONEGORO RAYA", "database": 384, "tokoh_teriayah": 244, "rkt_d_plus": 4, "rkt_d_minus": 1, "rkt_hp_plus": 4, "rkt_hp_minus": 11, "rkt_hu_plus": 12, "rkt_hu_minus": 4, "opini_selalu": 8, "opini_belum": 0, "opini_mudah": 6, "opini_tidak_mudah": 3, "akhzu_sk": 36, "akhzu_sks": 30, "akhzu_sk_blm03": 26, "akhzu_diberdayakan": 9, "akhzu_taahud": 5}, {"name": "SURABAYA", "database": 195, "tokoh_teriayah": 101, "rkt_d_plus": 10, "rkt_d_minus": 1, "rkt_hp_plus": 16, "rkt_hp_minus": 1, "rkt_hu_plus": 29, "rkt_hu_minus": 10, "opini_selalu": 4, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 1, "akhzu_sk": 24, "akhzu_sks": 12, "akhzu_sk_blm03": 26, "akhzu_diberdayakan": 17, "akhzu_taahud": 0}, {"name": "SIDOMOJO", "database": 395, "tokoh_teriayah": 232, "rkt_d_plus": 8, "rkt_d_minus": 1, "rkt_hp_plus": 4, "rkt_hp_minus": 1, "rkt_hu_plus": 17, "rkt_hu_minus": 10, "opini_selalu": 8, "opini_belum": 1, "opini_mudah": 8, "opini_tidak_mudah": 6, "akhzu_sk": 49, "akhzu_sks": 41, "akhzu_sk_blm03": 35, "akhzu_diberdayakan": 13, "akhzu_taahud": 0}, {"name": "PASURUAN RAYA", "database": 213, "tokoh_teriayah": 132, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 2, "rkt_hu_plus": 9, "rkt_hu_minus": 2, "opini_selalu": 0, "opini_belum": 6, "opini_mudah": 0, "opini_tidak_mudah": 6, "akhzu_sk": 27, "akhzu_sks": 11, "akhzu_sk_blm03": 1, "akhzu_diberdayakan": 6, "akhzu_taahud": 1}, {"name": "MALANG", "database": 216, "tokoh_teriayah": 166, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 2, "rkt_hu_plus": 9, "rkt_hu_minus": 8, "opini_selalu": 2, "opini_belum": 4, "opini_mudah": 3, "opini_tidak_mudah": 3, "akhzu_sk": 16, "akhzu_sks": 9, "akhzu_sk_blm03": 10, "akhzu_diberdayakan": 11, "akhzu_taahud": 2}, {"name": "JEMBER", "database": 640, "tokoh_teriayah": 428, "rkt_d_plus": 2, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 20, "rkt_hu_minus": 10, "opini_selalu": 5, "opini_belum": 5, "opini_mudah": 5, "opini_tidak_mudah": 3, "akhzu_sk": 40, "akhzu_sks": 37, "akhzu_sk_blm03": 33, "akhzu_diberdayakan": 73, "akhzu_taahud": 5}, {"name": "MADURA", "database": 233, "tokoh_teriayah": 175, "rkt_d_plus": 5, "rkt_d_minus": 1, "rkt_hp_plus": 2, "rkt_hp_minus": 2, "rkt_hu_plus": 8, "rkt_hu_minus": 2, "opini_selalu": 5, "opini_belum": 3, "opini_mudah": 6, "opini_tidak_mudah": 1, "akhzu_sk": 41, "akhzu_sks": 24, "akhzu_sk_blm03": 42, "akhzu_diberdayakan": 14, "akhzu_taahud": 7}], "Kalimantan Barat": [{"name": "KALBAR", "database": 146, "tokoh_teriayah": 96, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 9, "rkt_hu_minus": 2, "opini_selalu": 2, "opini_belum": 3, "opini_mudah": 2, "opini_tidak_mudah": 4, "akhzu_sk": 23, "akhzu_sks": 4, "akhzu_sk_blm03": 23, "akhzu_diberdayakan": 7, "akhzu_taahud": 0}], "Kalimantan Selatan": [{"name": "KALSEL", "database": 333, "tokoh_teriayah": 304, "rkt_d_plus": 9, "rkt_d_minus": 1, "rkt_hp_plus": 17, "rkt_hp_minus": 3, "rkt_hu_plus": 64, "rkt_hu_minus": 28, "opini_selalu": 4, "opini_belum": 0, "opini_mudah": 3, "opini_tidak_mudah": 1, "akhzu_sk": 67, "akhzu_sks": 29, "akhzu_sk_blm03": 8, "akhzu_diberdayakan": 22, "akhzu_taahud": 3}, {"name": "KALSEL 1", "database": 390, "tokoh_teriayah": 244, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 5, "rkt_hp_minus": 4, "rkt_hu_plus": 41, "rkt_hu_minus": 10, "opini_selalu": 6, "opini_belum": 3, "opini_mudah": 9, "opini_tidak_mudah": 0, "akhzu_sk": 73, "akhzu_sks": 20, "akhzu_sk_blm03": 55, "akhzu_diberdayakan": 17, "akhzu_taahud": 8}, {"name": "KALSEL 2", "database": 94, "tokoh_teriayah": 51, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 2, "opini_mudah": 0, "opini_tidak_mudah": 3, "akhzu_sk": 8, "akhzu_sks": 2, "akhzu_sk_blm03": 2, "akhzu_diberdayakan": 2, "akhzu_taahud": 0}, {"name": "KALSEL 3", "database": 419, "tokoh_teriayah": 197, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 6, "rkt_hu_minus": 4, "opini_selalu": 3, "opini_belum": 2, "opini_mudah": 4, "opini_tidak_mudah": 1, "akhzu_sk": 71, "akhzu_sks": 21, "akhzu_sk_blm03": 57, "akhzu_diberdayakan": 11, "akhzu_taahud": 3}], "Kalimantan Tengah": [{"name": "KALTENG 1", "database": 156, "tokoh_teriayah": 128, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 2, "rkt_hu_plus": 19, "rkt_hu_minus": 5, "opini_selalu": 2, "opini_belum": 1, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 76, "akhzu_sks": 60, "akhzu_sk_blm03": 63, "akhzu_diberdayakan": 10, "akhzu_taahud": 1}, {"name": "KALTENG 2", "database": 138, "tokoh_teriayah": 81, "rkt_d_plus": 9, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 11, "rkt_hu_minus": 10, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 0, "opini_tidak_mudah": 2, "akhzu_sk": 3, "akhzu_sks": 5, "akhzu_sk_blm03": 2, "akhzu_diberdayakan": 0, "akhzu_taahud": 2}], "Kalimantan Timur": [{"name": "KALTIM 1", "database": 269, "tokoh_teriayah": 210, "rkt_d_plus": 7, "rkt_d_minus": 2, "rkt_hp_plus": 14, "rkt_hp_minus": 6, "rkt_hu_plus": 47, "rkt_hu_minus": 25, "opini_selalu": 4, "opini_belum": 3, "opini_mudah": 7, "opini_tidak_mudah": 0, "akhzu_sk": 74, "akhzu_sks": 41, "akhzu_sk_blm03": 55, "akhzu_diberdayakan": 27, "akhzu_taahud": 7}, {"name": "KALTIM 2", "database": 227, "tokoh_teriayah": 195, "rkt_d_plus": 7, "rkt_d_minus": 0, "rkt_hp_plus": 11, "rkt_hp_minus": 2, "rkt_hu_plus": 15, "rkt_hu_minus": 1, "opini_selalu": 2, "opini_belum": 4, "opini_mudah": 5, "opini_tidak_mudah": 2, "akhzu_sk": 42, "akhzu_sks": 34, "akhzu_sk_blm03": 11, "akhzu_diberdayakan": 35, "akhzu_taahud": 8}], "Sulawesi Selatan": [{"name": "SULSEL", "database": 213, "tokoh_teriayah": 114, "rkt_d_plus": 5, "rkt_d_minus": 5, "rkt_hp_plus": 5, "rkt_hp_minus": 0, "rkt_hu_plus": 10, "rkt_hu_minus": 4, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 4, "opini_tidak_mudah": 0, "akhzu_sk": 17, "akhzu_sks": 21, "akhzu_sk_blm03": 8, "akhzu_diberdayakan": 10, "akhzu_taahud": 1}, {"name": "SULSEL 1", "database": 119, "tokoh_teriayah": 93, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 1, "rkt_hu_plus": 9, "rkt_hu_minus": 1, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 28, "akhzu_sks": 7, "akhzu_sk_blm03": 8, "akhzu_diberdayakan": 22, "akhzu_taahud": 1}, {"name": "SULSEL 2", "database": 36, "tokoh_teriayah": 26, "rkt_d_plus": 1, "rkt_d_minus": 1, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 7, "akhzu_sks": 2, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 2, "akhzu_taahud": 2}, {"name": "SULSEL 3", "database": 124, "tokoh_teriayah": 71, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 6, "rkt_hu_minus": 0, "opini_selalu": 2, "opini_belum": 3, "opini_mudah": 2, "opini_tidak_mudah": 2, "akhzu_sk": 18, "akhzu_sks": 4, "akhzu_sk_blm03": 5, "akhzu_diberdayakan": 3, "akhzu_taahud": 0}, {"name": "SULSEL 4", "database": 174, "tokoh_teriayah": 90, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 0, "rkt_hu_plus": 15, "rkt_hu_minus": 1, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 17, "akhzu_sks": 6, "akhzu_sk_blm03": 11, "akhzu_diberdayakan": 10, "akhzu_taahud": 6}], "Sulawesi Tenggara": [{"name": "SULTRA", "database": 140, "tokoh_teriayah": 70, "rkt_d_plus": 2, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 14, "rkt_hu_minus": 4, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 11, "akhzu_sks": 6, "akhzu_sk_blm03": 6, "akhzu_diberdayakan": 6, "akhzu_taahud": 2}, {"name": "SULTRA 1", "database": 90, "tokoh_teriayah": 42, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 1, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 10, "akhzu_sks": 0, "akhzu_sk_blm03": 5, "akhzu_diberdayakan": 5, "akhzu_taahud": 0}, {"name": "SULTRA 2", "database": 47, "tokoh_teriayah": 32, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 2, "rkt_hu_minus": 1, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 0, "opini_tidak_mudah": 2, "akhzu_sk": 3, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 2, "akhzu_taahud": 1}, {"name": "SULTRA 3", "database": 50, "tokoh_teriayah": 35, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 2, "rkt_hp_minus": 0, "rkt_hu_plus": 2, "rkt_hu_minus": 0, "opini_selalu": 0, "opini_belum": 2, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 4, "akhzu_sks": 4, "akhzu_sk_blm03": 6, "akhzu_diberdayakan": 7, "akhzu_taahud": 2}], "Sulawesi Barat": [{"name": "SULBAR", "database": 76, "tokoh_teriayah": 49, "rkt_d_plus": 1, "rkt_d_minus": 0, "rkt_hp_plus": 1, "rkt_hp_minus": 0, "rkt_hu_plus": 0, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 1, "opini_mudah": 0, "opini_tidak_mudah": 2, "akhzu_sk": 3, "akhzu_sks": 0, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 4, "akhzu_taahud": 7}], "Gorontalo": [{"name": "GORONTALO", "database": 140, "tokoh_teriayah": 77, "rkt_d_plus": 5, "rkt_d_minus": 0, "rkt_hp_plus": 11, "rkt_hp_minus": 6, "rkt_hu_plus": 18, "rkt_hu_minus": 3, "opini_selalu": 2, "opini_belum": 1, "opini_mudah": 2, "opini_tidak_mudah": 0, "akhzu_sk": 17, "akhzu_sks": 9, "akhzu_sk_blm03": 7, "akhzu_diberdayakan": 4, "akhzu_taahud": 2}], "Maluku Utara": [{"name": "MALUT", "database": 130, "tokoh_teriayah": 85, "rkt_d_plus": 3, "rkt_d_minus": 0, "rkt_hp_plus": 9, "rkt_hp_minus": 4, "rkt_hu_plus": 9, "rkt_hu_minus": 5, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 2, "opini_tidak_mudah": 1, "akhzu_sk": 35, "akhzu_sks": 8, "akhzu_sk_blm03": 17, "akhzu_diberdayakan": 8, "akhzu_taahud": 0}], "Maluku": [{"name": "MALUKU", "database": 29, "tokoh_teriayah": 16, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 2, "rkt_hu_minus": 0, "opini_selalu": 0, "opini_belum": 1, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 3, "akhzu_sks": 3, "akhzu_sk_blm03": 3, "akhzu_diberdayakan": 2, "akhzu_taahud": 2}], "Bali": [{"name": "BALI", "database": 44, "tokoh_teriayah": 13, "rkt_d_plus": 0, "rkt_d_minus": 0, "rkt_hp_plus": 0, "rkt_hp_minus": 0, "rkt_hu_plus": 3, "rkt_hu_minus": 0, "opini_selalu": 1, "opini_belum": 0, "opini_mudah": 1, "opini_tidak_mudah": 0, "akhzu_sk": 13, "akhzu_sks": 6, "akhzu_sk_blm03": 5, "akhzu_diberdayakan": 3, "akhzu_taahud": 0}], "Nusa Tenggara Barat": [{"name": "SUMBAWA", "database": 85, "tokoh_teriayah": 65, "rkt_d_plus": 2, "rkt_d_minus": 2, "rkt_hp_plus": 5, "rkt_hp_minus": 2, "rkt_hu_plus": 10, "rkt_hu_minus": 3, "opini_selalu": 1, "opini_belum": 1, "opini_mudah": 0, "opini_tidak_mudah": 1, "akhzu_sk": 10, "akhzu_sks": 3, "akhzu_sk_blm03": 0, "akhzu_diberdayakan": 3, "akhzu_taahud": 1}], "Papua": [{"name": "PAPUA", "database": 81, "tokoh_teriayah": 38, "rkt_d_plus": 2, "rkt_d_minus": 0, "rkt_hp_plus": 3, "rkt_hp_minus": 1, "rkt_hu_plus": 10, "rkt_hu_minus": 5, "opini_selalu": 3, "opini_belum": 0, "opini_mudah": 3, "opini_tidak_mudah": 0, "akhzu_sk": 16, "akhzu_sks": 15, "akhzu_sk_blm03": 10, "akhzu_diberdayakan": 3, "akhzu_taahud": 0}]};
+
+/* ---------- Kategori dropdown & pemetaan kolom Excel ---------- */
+
+const PJ_CATEGORIES = {
+  jumlah: {
+    label: "JUMLAH",
+    fields: [
+      { key: "A",  label: "A" },
+      { key: "D",  label: "D" },
+      { key: "IA", label: "IA" },
+      { key: "IM", label: "IM" },
+      { key: "tokoh_teriayah", label: "Tokoh Teriayah" }
+    ]
+  },
+  rekrutmen: {
+    label: "REKRUTMEN",
+    fields: [
+      { key: "rkt_d_plus",  label: "Penambahan D (DIK)" },
+      { key: "rkt_d_minus", label: "D Mundur (DIK)" },
+      { key: "rkt_hp_plus", label: "Penambahan HP (DIK)" },
+      { key: "rkt_hp_minus",label: "HP Mundur (DIK)" },
+      { key: "rkt_hu_plus", label: "Penambahan HU" },
+      { key: "rkt_hu_minus",label: "HU Mundur" }
+    ]
+  },
+  akhzu: {
+    label: "AKHZU QIYADATIL UMMAH",
+    fields: [
+      { key: "akhzu_sk",      label: "Kenal &amp; Positif thd SK" },
+      { key: "akhzu_sks",     label: "Kenal &amp; Positif thd SKS" },
+      { key: "akhzu_sk_blm03",label: "Kenal SK, Blm Kenal 03" },
+      { key: "akhzu_taahud",  label: "Jumlah Tokoh Taahud" }
+    ]
+  },
+  aaa: {
+    label: "AL-AQROBUNA AULA BIL MA'RUF",
+    fields: [
+      { key: "aaa_ia",   label: "Kontak Keluarga Syabah (IA)" },
+      { key: "aaa_im",   label: "Kontak Keluarga Syabah (IM)" },
+      { key: "aaa_ada",  label: "Ada Kesungguhan Kontak" },
+      { key: "aaa_belum",label: "Belum Ada Kesungguhan" }
+    ]
+  }
+};
+
+const LJ_CATEGORIES = {
+  jumlah_tokoh: {
+    label: "JUMLAH TOKOH",
+    fields: [
+      { key: "database",       label: "Database" },
+      { key: "tokoh_teriayah", label: "Tokoh Teriayah" }
+    ]
+  },
+  rekrutmen_tokoh: {
+    label: "REKRUTMEN TOKOH",
+    fields: [
+      { key: "rkt_d_plus",  label: "Penambahan D (DIK)" },
+      { key: "rkt_d_minus", label: "D Mundur (DIK)" },
+      { key: "rkt_hp_plus", label: "Penambahan HP (DIK)" },
+      { key: "rkt_hp_minus",label: "HP Mundur (DIK)" },
+      { key: "rkt_hu_plus", label: "Penambahan HU" },
+      { key: "rkt_hu_minus",label: "HU Mundur" }
+    ]
+  },
+  opini: {
+    label: "PEMBENTUKAN OPINI",
+    fields: [
+      { key: "opini_selalu",     label: "Selalu Rancang Kontak SKS" },
+      { key: "opini_belum",      label: "Belum Selalu Rancang Kontak" },
+      { key: "opini_mudah",      label: "Mudah Terima Opini" },
+      { key: "opini_tidak_mudah",label: "Tidak Mudah Terima Opini" }
+    ]
+  },
+  akhzu: {
+    label: "AKHZU QIYADATIL UMMAH",
+    fields: [
+      { key: "akhzu_sk",          label: "Kenal &amp; Positif thd SK" },
+      { key: "akhzu_sks",         label: "Kenal &amp; Positif thd SKS" },
+      { key: "akhzu_sk_blm03",    label: "Kenal SK, Blm Kenal 03" },
+      { key: "akhzu_diberdayakan",label: "Sudah Diberdayakan" },
+      { key: "akhzu_taahud",      label: "Jumlah Tokoh Taahud" }
+    ]
+  }
+};
+
+const MENUS = {
+  PJ:    { label:"PJ",    data: PJ_DATA, categories: PJ_CATEGORIES, defaultCat:"jumlah" },
+  Lijan: { label:"Lijan", data: LJ_DATA, categories: LJ_CATEGORIES, defaultCat:"jumlah_tokoh" }
+};
+
+/* ---------- Titik koordinat pusat tiap provinsi (untuk marker & fallback centroid) ---------- */
+const PROVINCE_COORDS = {
+  "Aceh": [4.6951, 96.7494],
+  "Sumatera Utara": [2.1154, 99.5451],
+  "Sumatera Barat": [-0.7399, 100.8000],
+  "Riau": [0.2933, 101.7068],
+  "Kepulauan Riau": [3.9457, 108.1429],
+  "Jambi": [-1.6101, 103.6131],
+  "Sumatera Selatan": [-3.3194, 104.9147],
+  "Kepulauan Bangka Belitung": [-2.7411, 106.4406],
+  "Bengkulu": [-3.7928, 102.2607],
+  "Lampung": [-4.5586, 105.4068],
+  "Banten": [-6.4058, 106.0640],
+  "DKI Jakarta": [-6.2088, 106.8456],
+  "Jawa Barat": [-6.9175, 107.6191],
+  "Jawa Tengah": [-7.1500, 110.1403],
+  "DI Yogyakarta": [-7.7956, 110.3695],
+  "Jawa Timur": [-7.5361, 112.2384],
+  "Bali": [-8.4095, 115.1889],
+  "Nusa Tenggara Barat": [-8.6529, 117.3616],
+  "Nusa Tenggara Timur": [-8.6574, 121.0794],
+  "Kalimantan Barat": [-0.2787, 111.4753],
+  "Kalimantan Tengah": [-1.6815, 113.3824],
+  "Kalimantan Selatan": [-3.0926, 115.2838],
+  "Kalimantan Timur": [0.5387, 116.4194],
+  "Kalimantan Utara": [3.0731, 116.0414],
+  "Sulawesi Utara": [1.4748, 124.8421],
+  "Gorontalo": [0.6999, 122.4467],
+  "Sulawesi Tengah": [-1.4300, 121.4456],
+  "Sulawesi Barat": [-2.8441, 119.2321],
+  "Sulawesi Selatan": [-3.6688, 119.9741],
+  "Sulawesi Tenggara": [-4.1449, 122.1746],
+  "Maluku": [-3.2385, 130.1453],
+  "Maluku Utara": [1.5709, 127.8087],
+  "Papua": [-4.2699, 138.0804],
+  "Papua Barat": [-1.3361, 133.1747]
+};
+
+/* Urutan tetap 34 provinsi -> dipakai untuk menghasilkan warna berbeda yang konsisten */
+const PROVINCE_ORDER = [
+  "Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","Jambi","Sumatera Selatan",
+  "Kepulauan Bangka Belitung","Bengkulu","Lampung","Banten","DKI Jakarta","Jawa Barat","Jawa Tengah",
+  "DI Yogyakarta","Jawa Timur","Bali","Nusa Tenggara Barat","Nusa Tenggara Timur","Kalimantan Barat",
+  "Kalimantan Tengah","Kalimantan Selatan","Kalimantan Timur","Kalimantan Utara","Sulawesi Utara",
+  "Gorontalo","Sulawesi Tengah","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tenggara","Maluku",
+  "Maluku Utara","Papua","Papua Barat"
+];
+
+/* Radius area klik (meter) per provinsi -> dipakai sebagai hitbox tak kasat mata
+   di sekitar tiap titik, supaya tetap mudah diklik walau batas GeoJSON gagal dimuat. */
+const PROVINCE_HIT_RADIUS_M = {
+  "Aceh":75000,"Sumatera Utara":80000,"Sumatera Barat":70000,"Riau":80000,"Kepulauan Riau":50000,
+  "Jambi":70000,"Sumatera Selatan":75000,"Kepulauan Bangka Belitung":45000,"Bengkulu":55000,"Lampung":55000,
+  "Banten":32000,"DKI Jakarta":22000,"Jawa Barat":45000,"Jawa Tengah":45000,"DI Yogyakarta":25000,
+  "Jawa Timur":55000,"Bali":30000,"Nusa Tenggara Barat":45000,"Nusa Tenggara Timur":70000,
+  "Kalimantan Barat":100000,"Kalimantan Tengah":110000,"Kalimantan Selatan":65000,"Kalimantan Timur":110000,
+  "Kalimantan Utara":85000,"Sulawesi Utara":50000,"Gorontalo":40000,"Sulawesi Tengah":90000,
+  "Sulawesi Barat":45000,"Sulawesi Selatan":75000,"Sulawesi Tenggara":65000,"Maluku":80000,
+  "Maluku Utara":60000,"Papua":140000,"Papua Barat":110000
+};
+
+/* Alias nama provinsi dari berbagai kemungkinan penulisan pada file GeoJSON publik
+   ke nama kanonik yang dipakai pada PROVINCE_ORDER / PJ_DATA / LJ_DATA di atas. */
+const PROVINCE_ALIASES = {
+  "ACEH":"Aceh", "NANGGROE ACEH DARUSSALAM":"Aceh", "DI ACEH":"Aceh", "NAD":"Aceh",
+  "SUMATERA UTARA":"Sumatera Utara", "SUMUT":"Sumatera Utara",
+  "SUMATERA BARAT":"Sumatera Barat", "SUMBAR":"Sumatera Barat",
+  "RIAU":"Riau",
+  "KEPULAUAN RIAU":"Kepulauan Riau", "KEPRI":"Kepulauan Riau",
+  "JAMBI":"Jambi",
+  "SUMATERA SELATAN":"Sumatera Selatan", "SUMSEL":"Sumatera Selatan",
+  "BANGKA BELITUNG":"Kepulauan Bangka Belitung", "KEPULAUAN BANGKA BELITUNG":"Kepulauan Bangka Belitung", "BANGKA-BELITUNG":"Kepulauan Bangka Belitung",
+  "BENGKULU":"Bengkulu",
+  "LAMPUNG":"Lampung",
+  "BANTEN":"Banten",
+  "DKI JAKARTA":"DKI Jakarta", "JAKARTA RAYA":"DKI Jakarta", "JAKARTA":"DKI Jakarta", "DAERAH KHUSUS IBUKOTA JAKARTA":"DKI Jakarta",
+  "JAWA BARAT":"Jawa Barat",
+  "JAWA TENGAH":"Jawa Tengah",
+  "DI YOGYAKARTA":"DI Yogyakarta", "YOGYAKARTA":"DI Yogyakarta", "DAERAH ISTIMEWA YOGYAKARTA":"DI Yogyakarta",
+  "JAWA TIMUR":"Jawa Timur",
+  "BALI":"Bali",
+  "NUSA TENGGARA BARAT":"Nusa Tenggara Barat", "NTB":"Nusa Tenggara Barat",
+  "NUSA TENGGARA TIMUR":"Nusa Tenggara Timur", "NTT":"Nusa Tenggara Timur",
+  "KALIMANTAN BARAT":"Kalimantan Barat",
+  "KALIMANTAN TENGAH":"Kalimantan Tengah",
+  "KALIMANTAN SELATAN":"Kalimantan Selatan",
+  "KALIMANTAN TIMUR":"Kalimantan Timur",
+  "KALIMANTAN UTARA":"Kalimantan Utara",
+  "SULAWESI UTARA":"Sulawesi Utara",
+  "GORONTALO":"Gorontalo",
+  "SULAWESI TENGAH":"Sulawesi Tengah",
+  "SULAWESI BARAT":"Sulawesi Barat",
+  "SULAWESI SELATAN":"Sulawesi Selatan",
+  "SULAWESI TENGGARA":"Sulawesi Tenggara",
+  "MALUKU":"Maluku",
+  "MALUKU UTARA":"Maluku Utara",
+  "PAPUA":"Papua", "IRIAN JAYA":"Papua", "IRIAN JAYA TENGAH":"Papua",
+  "PAPUA BARAT":"Papua Barat", "IRIAN JAYA BARAT":"Papua Barat"
+};
+
+</script>
+<script>
+/* ====================================================================
+   LOGIKA APLIKASI: peta Leaflet + navigasi menu/kategori + panel detail
+==================================================================== */
+
+/* ---------- Util warna: menghasilkan warna berbeda & konsisten per provinsi ---------- */
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+}
+
+const PROVINCE_COLORS = {};
+(function buildPalette() {
+  const total = PROVINCE_ORDER.length;
+  // offset & multiplier dipilih agar provinsi bertetangga tidak mendapat hue yang berdekatan
+  const step = 360 / total;
+  PROVINCE_ORDER.forEach((name, i) => {
+    const hue = (i * step * 2.15) % 360;
+    PROVINCE_COLORS[name] = hslToHex(hue, 58, 47);
+  });
+})();
+function colorForProvince(name) {
+  return PROVINCE_COLORS[name] || '#9AA6A5';
+}
+
+/* ---------- Normalisasi nama provinsi dari properti GeoJSON ---------- */
+function normalizeName(s) {
+  return (s || '').toString()
+    .toUpperCase()
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function resolveProvinceName(rawName) {
+  const n = normalizeName(rawName);
+  if (PROVINCE_ALIASES[n]) return PROVINCE_ALIASES[n];
+  // fallback: cocokkan langsung dengan PROVINCE_ORDER (case-insensitive)
+  const direct = PROVINCE_ORDER.find(p => normalizeName(p) === n);
+  if (direct) return direct;
+  // fallback: cocokkan substring
+  const partial = PROVINCE_ORDER.find(p => n.includes(normalizeName(p)) || normalizeName(p).includes(n));
+  return partial || null;
+}
+function getFeatureProvinceRaw(props) {
+  const candidates = ['Propinsi', 'PROVINSI', 'Provinsi', 'provinsi', 'NAME_1', 'name', 'NAMOBJ', 'WADMPR', 'state', 'province', 'NAMA_PROV', 'nama'];
+  for (const key of candidates) {
+    if (props && props[key]) return props[key];
+  }
+  return null;
+}
+
+/* ---------- State aplikasi ---------- */
+let currentMenu = 'PJ';
+let currentCategory = 'jumlah';
+let map, geoLayer, markerLayer;
+let activeProvince = null;
+
+/* ---------- Guard: pastikan Leaflet sudah termuat ---------- */
+if (typeof L === 'undefined') {
+  document.getElementById('map').innerHTML =
+    '<div style="padding:40px;text-align:center;font-family:sans-serif;color:#0B3B3C;">' +
+    '&#9888;&nbsp; Library Leaflet gagal dimuat dari CDN. Periksa koneksi internet Anda lalu muat ulang halaman.' +
+    '</div>';
+  throw new Error('Leaflet (L) tidak terdefinisi — CDN gagal dimuat.');
+}
+
+/* ---------- Inisialisasi peta (zoom in/out aktif) ---------- */
+map = L.map('map', {
+  center: [-2.2, 118.5],
+  zoom: 5,
+  minZoom: 4,
+  maxZoom: 9,
+  zoomControl: true,
+  scrollWheelZoom: true,
+  doubleClickZoom: true,
+  boxZoom: true,
+  touchZoom: true,
+  keyboard: true,
+  dragging: true,
+  tap: true,
+  attributionControl: true
+});
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+markerLayer = L.layerGroup().addTo(map);
+
+/* Menutup panel saat peta digeser/di-zoom supaya posisi popup tidak "lepas" dari titik aslinya */
+map.on('movestart zoomstart', () => closePanel());
+
+/* ---------- Muat batas provinsi (GeoJSON publik, tanpa API key) ----------
+   Beberapa jaringan memblokir salah satu CDN, jadi dicoba berurutan (fallback chain). */
+const GEOJSON_URLS = [
+  'https://cdn.jsdelivr.net/gh/superpikar/indonesia-geojson@master/indonesia-province-simple.json',
+  'https://rawcdn.githack.com/superpikar/indonesia-geojson/master/indonesia-province-simple.json',
+  'https://raw.githack.com/superpikar/indonesia-geojson/master/indonesia-province-simple.json',
+  'https://cdn.statically.io/gh/superpikar/indonesia-geojson/master/indonesia-province-simple.json'
+];
+
+async function loadProvinceGeoJSON() {
+  for (const url of GEOJSON_URLS) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const geo = await res.json();
+      return geo;
+    } catch (err) {
+      console.warn('Sumber GeoJSON gagal, mencoba sumber lain:', url, err.message);
+    }
+  }
+  throw new Error('Semua sumber GeoJSON gagal dimuat');
+}
+
+loadProvinceGeoJSON()
+  .then(geo => {
+    geoLayer = L.geoJSON(geo, {
+      style: styleFeature,
+      onEachFeature: onEachFeature
+    }).addTo(map);
+    try { map.fitBounds(geoLayer.getBounds(), { padding: [10, 10] }); } catch (e) {}
+    renderMarkers();
+    renderSummary();
+  })
+  .catch(err => {
+    console.error('Gagal memuat GeoJSON provinsi:', err);
+    document.querySelector('.map-hint').innerHTML =
+      '&#9888;&nbsp; Batas provinsi gagal dimuat (periksa koneksi internet). Titik data tetap ditampilkan.';
+    renderMarkers();
+    renderSummary();
+  });
+
+function styleFeature(feature) {
+  const raw = getFeatureProvinceRaw(feature.properties);
+  const prov = resolveProvinceName(raw);
+  return {
+    fillColor: prov ? colorForProvince(prov) : '#C9C4B4',
+    weight: 1.3,
+    color: '#3B3B34',
+    fillOpacity: 0.62,
+    opacity: 0.85
+  };
+}
+
+function onEachFeature(feature, layer) {
+  const raw = getFeatureProvinceRaw(feature.properties);
+  const prov = resolveProvinceName(raw);
+  layer.on({
+    mouseover: (e) => {
+      e.target.setStyle({ fillOpacity: 0.85, weight: 2.4, color: '#0B3B3C' });
+      e.target.bringToFront();
+    },
+    mouseout: (e) => {
+      if (!geoLayer) return;
+      geoLayer.resetStyle(e.target);
+    },
+    click: (e) => {
+      L.DomEvent.stopPropagation(e);
+      suppressNextDocClose = true;
+      showDetail(prov || raw, e.containerPoint);
+    }
+  });
+}
+
+/* ---------- Titik lokasi tiap provinsi ---------- */
+function renderMarkers() {
+  markerLayer.clearLayers();
+  const dataset = MENUS[currentMenu].data;
+  Object.keys(dataset).forEach(prov => {
+    const coord = PROVINCE_COORDS[prov];
+    if (!coord) return;
+
+    // Hitbox tak kasat mata: memperbesar area klik di sekitar titik agar mudah
+    // diklik walau tampilan batas provinsi (GeoJSON) gagal dimuat dari internet.
+    const hit = L.circle(coord, {
+      radius: PROVINCE_HIT_RADIUS_M[prov] || 60000,
+      stroke: false,
+      fillOpacity: 0,
+      fillColor: '#000',
+      fill: true,
+      interactive: true
+    });
+    hit.on('click', (e) => {
+      L.DomEvent.stopPropagation(e);
+      suppressNextDocClose = true;
+      showDetail(prov, e.containerPoint);
+    });
+    hit.addTo(markerLayer);
+
+    const marker = L.circleMarker(coord, {
+      radius: 7,
+      fillColor: '#C8992A',
+      color: '#FFFFFF',
+      weight: 2,
+      fillOpacity: 0.95
+    });
+    marker.on('click', (e) => {
+      L.DomEvent.stopPropagation(e);
+      suppressNextDocClose = true;
+      showDetail(prov, e.containerPoint);
+    });
+    marker.addTo(markerLayer);
+  });
+}
+
+/* ---------- Panel detail (popup mengambang di sekitar titik klik) ---------- */
+const mapEl = document.getElementById('map');
+const detailPanel = document.getElementById('detailPanel');
+const panelProvName = document.getElementById('panelProvName');
+const panelCatName = document.getElementById('panelCatName');
+const panelCards = document.getElementById('panelCards');
+
+function fmt(v) {
+  if (v === null || v === undefined || v === '') return '-';
+  if (typeof v === 'number') return v.toLocaleString('id-ID');
+  return v;
+}
+
+/* Menempatkan panel di sekitar titik klik (containerPoint), lalu menyesuaikan
+   posisinya agar selalu berada di dalam area peta (tidak terpotong tepi). */
+function positionPanelNear(point) {
+  if (!point) return;
+  const mapW = mapEl.clientWidth;
+  const mapH = mapEl.clientHeight;
+
+  // tampilkan dulu (tak kasat mata) supaya ukurannya bisa diukur
+  detailPanel.style.visibility = 'hidden';
+  detailPanel.style.left = '0px';
+  detailPanel.style.top = '0px';
+  detailPanel.classList.add('open');
+
+  const pw = detailPanel.offsetWidth;
+  const ph = detailPanel.offsetHeight;
+  const margin = 14;
+
+  let left = point.x + 16;
+  let top = point.y - ph / 2;
+
+  if (left + pw > mapW - margin) left = point.x - pw - 16;
+  if (left < margin) left = margin;
+  if (top + ph > mapH - margin) top = mapH - ph - margin;
+  if (top < margin) top = margin;
+
+  detailPanel.style.left = left + 'px';
+  detailPanel.style.top = top + 'px';
+  detailPanel.style.visibility = 'visible';
+}
+
+function showDetail(provinceName, point) {
+  if (!provinceName) return;
+  activeProvince = provinceName;
+  lastClickPoint = point || lastClickPoint;
+
+  const menuCfg = MENUS[currentMenu];
+  const catCfg = menuCfg.categories[currentCategory];
+  const records = menuCfg.data[provinceName];
+
+  panelProvName.textContent = provinceName;
+  panelCatName.textContent = `${menuCfg.label} \u2014 ${catCfg.label}`;
+  panelCards.innerHTML = '';
+
+  if (!records || records.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-msg';
+    empty.textContent = `Tidak ada data "${menuCfg.label}" untuk provinsi ${provinceName}.`;
+    panelCards.appendChild(empty);
+  } else {
+    records.forEach(rec => {
+      const card = document.createElement('div');
+      card.className = 'subcard';
+
+      const head = document.createElement('div');
+      head.className = 'subcard-head';
+      head.textContent = rec.name;
+      card.appendChild(head);
+
+      if (rec.jumlah_mahaly !== undefined) {
+        const mahaly = document.createElement('div');
+        mahaly.className = 'subcard-mahaly';
+        mahaly.textContent = `Jumlah Mahally: ${fmt(rec.jumlah_mahaly)}`;
+        card.appendChild(mahaly);
+      }
+
+      const body = document.createElement('div');
+      body.className = 'subcard-body';
+      catCfg.fields.forEach(f => {
+        const row = document.createElement('div');
+        row.className = 'field-row';
+        row.innerHTML = `<span class="lbl">${f.label}</span><span class="val">${fmt(rec[f.key])}</span>`;
+        body.appendChild(row);
+      });
+      card.appendChild(body);
+      panelCards.appendChild(card);
+    });
+  }
+
+  positionPanelNear(lastClickPoint);
+}
+
+function closePanel() {
+  detailPanel.classList.remove('open');
+  activeProvince = null;
+  lastClickPoint = null;
+}
+
+let lastClickPoint = null;
+let suppressNextDocClose = false;
+
+document.getElementById('panelClose').addEventListener('click', (e) => {
+  e.stopPropagation();
+  closePanel();
+});
+
+/* Klik di sembarang tempat di luar panel akan menutup tooltip.
+   suppressNextDocClose menjaga agar klik yang BARU SAJA membuka panel
+   (dari titik/wilayah provinsi) tidak langsung menutupnya lagi pada tick yang sama. */
+document.addEventListener('click', (evt) => {
+  if (suppressNextDocClose) { suppressNextDocClose = false; return; }
+  if (detailPanel.classList.contains('open') && !detailPanel.contains(evt.target)) {
+    closePanel();
+  }
+});
+
+/* ---------- Ringkasan nasional (total seluruh provinsi utk kategori aktif) ---------- */
+function renderSummary() {
+  const menuCfg = MENUS[currentMenu];
+  const catCfg = menuCfg.categories[currentCategory];
+  const dataset = menuCfg.data;
+
+  const totals = {};
+  catCfg.fields.forEach(f => totals[f.key] = 0);
+  let provCount = 0;
+  Object.values(dataset).forEach(records => {
+    provCount++;
+    records.forEach(rec => {
+      catCfg.fields.forEach(f => { totals[f.key] += (Number(rec[f.key]) || 0); });
+    });
+  });
+
+  document.getElementById('summaryTitle').textContent = `Ringkasan Nasional \u2014 ${catCfg.label}`;
+  const body = document.getElementById('summaryBody');
+  body.innerHTML = '';
+  catCfg.fields.forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'sum-row';
+    row.innerHTML = `<span>${f.label}</span><span>${fmt(totals[f.key])}</span>`;
+    body.appendChild(row);
+  });
+
+  document.getElementById('activeMenuLabel').textContent = menuCfg.label;
+  document.getElementById('activeCatLabel').textContent = catCfg.label;
+  document.getElementById('activeProvCount').textContent = `${provCount} provinsi memiliki data`;
+}
+
+/* ---------- Navigasi: menu utama (PJ / Lijan) ---------- */
+const btnMenuPJ = document.getElementById('btnMenuPJ');
+const btnMenuLijan = document.getElementById('btnMenuLijan');
+const categorySelect = document.getElementById('categorySelect');
+
+function populateCategorySelect() {
+  const cats = MENUS[currentMenu].categories;
+  categorySelect.innerHTML = '';
+  Object.keys(cats).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = cats[key].label;
+    categorySelect.appendChild(opt);
+  });
+  currentCategory = MENUS[currentMenu].defaultCat;
+  categorySelect.value = currentCategory;
+}
+
+function setMenu(menuKey) {
+  currentMenu = menuKey;
+  btnMenuPJ.classList.toggle('active', menuKey === 'PJ');
+  btnMenuPJ.setAttribute('aria-selected', menuKey === 'PJ');
+  btnMenuLijan.classList.toggle('active', menuKey === 'Lijan');
+  btnMenuLijan.setAttribute('aria-selected', menuKey === 'Lijan');
+  populateCategorySelect();
+  renderMarkers();
+  renderSummary();
+  if (geoLayer) geoLayer.eachLayer(l => geoLayer.resetStyle(l));
+  if (activeProvince && lastClickPoint) {
+    showDetail(activeProvince, lastClickPoint);
+  } else {
+    closePanel();
+  }
+}
+
+btnMenuPJ.addEventListener('click', (e) => { e.stopPropagation(); setMenu('PJ'); });
+btnMenuLijan.addEventListener('click', (e) => { e.stopPropagation(); setMenu('Lijan'); });
+
+categorySelect.addEventListener('change', (e) => {
+  e.stopPropagation();
+  currentCategory = e.target.value;
+  renderSummary();
+  if (activeProvince && lastClickPoint) showDetail(activeProvince, lastClickPoint);
+});
+categorySelect.addEventListener('click', (e) => e.stopPropagation());
+
+/* ---------- Inisialisasi awal ---------- */
+populateCategorySelect();
+
+</script>
+</body>
+</html>
